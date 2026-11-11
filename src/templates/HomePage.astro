@@ -1,0 +1,150 @@
+---
+import Layout from '../layouts/Layout.astro';
+import DualHero from '../components/DualHero.astro';
+import PostsGrid from '../components/PostsGrid.astro';
+import DiscoverSection from '../components/DiscoverSection.astro';
+import { getCollection } from 'astro:content';
+import { t, type Language } from '../utils/i18n';
+
+export interface Props {
+  lang?: Language;
+}
+
+// Get posts based on language
+const allPosts = await getCollection('posts');
+
+// Helper function to resolve multilingual frontmatter
+function resolveMultilingualData(data: any, targetLang: Language) {
+  const resolved = { ...data };
+  Object.keys(resolved).forEach(key => {
+    const value = resolved[key];
+    if (typeof value === 'object' && value !== null && !Array.isArray(value) && !value.lat) {
+      if (value[targetLang]) {
+        resolved[key] = value[targetLang];
+      } else if (value.en) {
+        resolved[key] = value.en; // Fallback to English
+      }
+    }
+  });
+  return resolved;
+}
+
+// Process posts for both languages
+const processedPostsEn = allPosts.map(post => {
+  let processedData = { ...post.data };
+  processedData = resolveMultilingualData(processedData, 'en');
+  processedData.lang = 'en';
+  return {
+    ...post,
+    data: processedData
+  };
+});
+
+const processedPostsIt = allPosts.map(post => {
+  let processedData = { ...post.data };
+  processedData = resolveMultilingualData(processedData, 'it');
+  processedData.lang = 'it';
+  return {
+    ...post,
+    data: processedData
+  };
+});
+
+const recentPostsEn = processedPostsEn
+  .sort((a, b) => new Date(b.data.publishTime).getTime() - new Date(a.data.publishTime).getTime())
+  .slice(0, 3);
+
+const recentPostsIt = processedPostsIt
+  .sort((a, b) => new Date(b.data.publishTime).getTime() - new Date(a.data.publishTime).getTime())
+  .slice(0, 3);
+---
+
+<Layout title="Upupa · Horizon & Diary">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+    <!-- English Version -->
+    <div data-lang="en">
+      <DualHero lang="en" />
+
+      <!-- Recent Diary Posts on Home -->
+      <div class="mt-8 pt-12 border-t border-gray-200/80 dark:border-zinc-800">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h2 class="text-2xl md:text-3xl font-serif font-bold text-gray-900 dark:text-gray-100">
+              {t('home.diary.recentTitle', 'en')}
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              {t('home.diary.subtitle', 'en')}
+            </p>
+          </div>
+          <a 
+            href="/diary/" 
+            class="hidden sm:inline-flex items-center text-sm font-semibold text-warm-700 dark:text-warm-400 hover:text-warm-800 dark:hover:text-warm-300"
+          >
+            <span>{t('posts.viewAll', 'en')}</span>
+            <span class="ml-1">→</span>
+          </a>
+        </div>
+
+        <PostsGrid 
+          posts={recentPostsEn}
+          lang="en"
+          title=""
+          showViewAll={true}
+          viewAllUrl="/diary/"
+          viewAllText={t('posts.viewAll', 'en')}
+        />
+      </div>
+
+      <!-- Discover Section -->
+      <DiscoverSection 
+        title={t('discover.title', 'en')}
+        description={t('discover.description', 'en')}
+        aboutUrl="/about/"
+        aboutText={t('discover.about', 'en')}
+      />
+    </div>
+
+    <!-- Italian Version -->
+    <div data-lang="it" style="display: none;">
+      <DualHero lang="it" />
+
+      <!-- Recent Diary Posts on Home -->
+      <div class="mt-8 pt-12 border-t border-gray-200/80 dark:border-zinc-800">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h2 class="text-2xl md:text-3xl font-serif font-bold text-gray-900 dark:text-gray-100">
+              {t('home.diary.recentTitle', 'it')}
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              {t('home.diary.subtitle', 'it')}
+            </p>
+          </div>
+          <a 
+            href="/diary/" 
+            class="hidden sm:inline-flex items-center text-sm font-semibold text-warm-700 dark:text-warm-400 hover:text-warm-800 dark:hover:text-warm-300"
+          >
+            <span>{t('posts.viewAll', 'it')}</span>
+            <span class="ml-1">→</span>
+          </a>
+        </div>
+
+        <PostsGrid 
+          posts={recentPostsIt}
+          lang="it"
+          title=""
+          showViewAll={true}
+          viewAllUrl="/diary/"
+          viewAllText={t('posts.viewAll', 'it')}
+        />
+      </div>
+
+      <!-- Discover Section -->
+      <DiscoverSection 
+        title={t('discover.title', 'it')}
+        description={t('discover.description', 'it')}
+        aboutUrl="/about/"
+        aboutText={t('discover.about', 'it')}
+      />
+    </div>
+  </div>
+</Layout>

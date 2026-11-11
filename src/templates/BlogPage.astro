@@ -1,0 +1,230 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PostsList from '../components/PostsList.astro';
+import ReadingGuide from '../components/ReadingGuide.astro';
+import { getCollection } from 'astro:content';
+import { t, type Language } from '../utils/i18n';
+
+export interface Props {
+  lang?: Language;
+}
+
+const { lang = 'en' } = Astro.props;
+
+// Get posts based on language
+const allPosts = await getCollection('posts');
+
+// Helper function to resolve multilingual frontmatter
+function resolveMultilingualData(data: any, targetLang: Language) {
+  const resolved = { ...data };
+  Object.keys(resolved).forEach(key => {
+    const value = resolved[key];
+    if (typeof value === 'object' && value !== null && !Array.isArray(value) && !value.lat) {
+      if (value[targetLang]) {
+        resolved[key] = value[targetLang];
+      } else if (value.en) {
+        resolved[key] = value.en; // Fallback to English
+      }
+    }
+  });
+  return resolved;
+}
+
+// Process posts for both languages
+const processedPostsEn = allPosts.flatMap(post => {
+  if (post.slug.startsWith('en/')) {
+    return [{
+      ...post,
+      data: { ...post.data, lang: 'en' as Language }
+    }];
+  } else if (!post.slug.startsWith('en/') && !post.slug.startsWith('it/')) {
+    if (post.body.includes('<!-- en -->') || post.body.includes('<!-- it -->')) {
+      const resolvedData = resolveMultilingualData(post.data, 'en');
+      resolvedData.lang = 'en';
+      return [{
+        ...post,
+        data: resolvedData
+      }];
+    } else {
+      return [{
+        ...post,
+        data: { ...post.data, lang: 'en' as Language }
+      }];
+    }
+  }
+  return [];
+});
+
+const processedPostsIt = allPosts.flatMap(post => {
+  if (post.slug.startsWith('it/')) {
+    return [{
+      ...post,
+      data: { ...post.data, lang: 'it' as Language }
+    }];
+  } else if (!post.slug.startsWith('en/') && !post.slug.startsWith('it/')) {
+    if (post.body.includes('<!-- en -->') || post.body.includes('<!-- it -->')) {
+      const resolvedData = resolveMultilingualData(post.data, 'it');
+      resolvedData.lang = 'it';
+      return [{
+        ...post,
+        data: resolvedData
+      }];
+    }
+  }
+  return [];
+});
+
+const sortedPostsEn = processedPostsEn.sort((a, b) =>
+  b.data.publishTime.getTime() - a.data.publishTime.getTime()
+);
+
+const sortedPostsIt = processedPostsIt.sort((a, b) =>
+  b.data.publishTime.getTime() - a.data.publishTime.getTime()
+);
+---
+
+<Layout>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- English Version -->
+    <div data-lang="en">
+      <PageHeader
+        title={t('blog.title', 'en')}
+        description={t('blog.description', 'en')}
+      />
+
+      <!-- Reading Guide -->
+      <ReadingGuide lang="en" />
+
+      <!-- Sort Button -->
+      <div class="mb-6 flex justify-end">
+        <button
+          id="sortButton-en"
+          class="inline-flex items-center gap-3 px-4 py-2 bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 shadow-sm"
+          data-order="newest"
+          title={t('blog.sort.switchTo.oldest', 'en')}
+        >
+          <span class="text-sm font-medium" data-current-state>{t('blog.sort.newest', 'en')}</span>
+          <div class="flex items-center gap-1 text-gray-400 dark:text-gray-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12M8 12h12M8 17h12M3 7h.01M3 12h.01M3 17h.01"></path>
+            </svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-icon>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </div>
+        </button>
+      </div>
+
+      <div id="postsList-en">
+        <PostsList
+          posts={sortedPostsEn}
+          lang="en"
+          emptyMessage={t('blog.empty', 'en')}
+        />
+      </div>
+    </div>
+
+    <!-- Italian Version -->
+    <div data-lang="it" style="display: none;">
+      <PageHeader
+        title={t('blog.title', 'it')}
+        description={t('blog.description', 'it')}
+      />
+
+      <!-- Reading Guide -->
+      <ReadingGuide lang="it" />
+
+      <!-- Sort Button -->
+      <div class="mb-6 flex justify-end">
+        <button
+          id="sortButton-it"
+          class="inline-flex items-center gap-3 px-4 py-2 bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 shadow-sm"
+          data-order="newest"
+          title={t('blog.sort.switchTo.oldest', 'it')}
+        >
+          <span class="text-sm font-medium" data-current-state>{t('blog.sort.newest', 'it')}</span>
+          <div class="flex items-center gap-1 text-gray-400 dark:text-gray-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12M8 12h12M8 17h12M3 7h.01M3 12h.01M3 17h.01"></path>
+            </svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-icon>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </div>
+        </button>
+      </div>
+
+      <div id="postsList-it">
+        <PostsList
+          posts={sortedPostsIt}
+          lang="it"
+          emptyMessage={t('blog.empty', 'it')}
+        />
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { t } from '../utils/i18n';
+
+  function setupSortButton(lang: 'en' | 'it') {
+    const button = document.getElementById(`sortButton-${lang}`);
+    const postsList = document.getElementById(`postsList-${lang}`);
+
+    if (!button || !postsList) return;
+
+    button.addEventListener('click', () => {
+      const currentOrder = button.getAttribute('data-order');
+      const newOrder = currentOrder === 'newest' ? 'oldest' : 'newest';
+
+      // Get all post cards
+      const postsContainer = postsList.querySelector('[class*="space-y-"]');
+      if (!postsContainer) return;
+
+      const posts = Array.from(postsContainer.children);
+
+      // Reverse the order
+      posts.reverse();
+
+      // Clear and re-append in new order
+      postsContainer.innerHTML = '';
+      posts.forEach(post => postsContainer.appendChild(post));
+
+      // Update button state
+      button.setAttribute('data-order', newOrder);
+
+      // Update current state text
+      const stateSpan = button.querySelector('[data-current-state]');
+      if (stateSpan) {
+        stateSpan.textContent = newOrder === 'newest'
+          ? t('blog.sort.newest', lang)
+          : t('blog.sort.oldest', lang);
+      }
+
+      // Update title (tooltip)
+      button.setAttribute('title', newOrder === 'newest'
+        ? t('blog.sort.switchTo.oldest', lang)
+        : t('blog.sort.switchTo.newest', lang)
+      );
+
+      // Update icon direction
+      const icon = button.querySelector('[data-icon]');
+      if (icon) {
+        const path = icon.querySelector('path');
+        if (path) {
+          // Down arrow for newest (descending), up arrow for oldest (ascending)
+          path.setAttribute('d', newOrder === 'newest'
+            ? 'M19 9l-7 7-7-7'  // Down arrow
+            : 'M5 15l7-7 7 7'   // Up arrow
+          );
+        }
+      }
+    });
+  }
+
+  // Setup for both languages
+  setupSortButton('en');
+  setupSortButton('it');
+</script>

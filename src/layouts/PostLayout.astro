@@ -1,0 +1,85 @@
+---
+import Layout from './Layout.astro';
+import MusicPlayer from '../components/MusicPlayer.astro';
+import { t, type Language } from '../utils/i18n';
+import { formatDateRange } from '../utils/dateUtils';
+
+const { title, eventStartTime, eventEndTime, publishTime, music, cover, lang } = Astro.props;
+const currentLang = lang || 'en';
+const hasMusic = music && music.url;
+
+const backText = currentLang === 'it' ? 'Torna all\'archivio' : 'Back to archive';
+const eventText = currentLang === 'it' ? 'Evento:' : 'Event:';
+const publishedText = currentLang === 'it' ? 'Pubblicato:' : 'Published:';
+const musicText = currentLang === 'it' ? 'Canzone che Mi Ha Ispirato' : 'Song That Inspired Me';
+const backUrl = '/blog/'; // Same URL for both languages
+const locale = currentLang === 'it' ? 'it-IT' : 'en-US';
+
+const eventDateRange = formatDateRange(eventStartTime, eventEndTime, locale);
+---
+
+<Layout title={title} lang={currentLang}>
+  <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <header class="mb-8">
+      <div class="mb-4">
+        <a href={backUrl} class="inline-flex items-center text-sm text-warm-600 dark:text-warm-400 hover:text-warm-700 dark:hover:text-warm-300 transition-colors">
+          ← {backText}
+        </a>
+      </div>
+      <div class="mb-4">
+        <h1 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-gray-100 leading-tight">
+          {title}
+        </h1>
+      </div>
+      <div class="flex flex-col gap-2 text-sm text-gray-600 dark:text-gray-400">
+        <div class="flex items-center gap-2">
+          <span class="text-gray-900 dark:text-gray-100 font-medium">{eventText}</span>
+          <time datetime={eventStartTime.toISOString()} class="font-medium">
+            {eventDateRange}
+          </time>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-gray-900 dark:text-gray-100 font-medium">{publishedText}</span>
+          <time datetime={publishTime.toISOString()}>
+            {publishTime.toLocaleDateString(locale, {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </time>
+        </div>
+      </div>
+      {cover && (
+        <div class="mt-6 flex justify-center">
+          <img
+            src={cover}
+            alt={`Immagine di copertina per ${title}`}
+            class="max-w-full h-auto object-contain rounded-lg shadow-md"
+            style="max-height: 600px;"
+          />
+        </div>
+      )}
+    </header>
+    
+    <main class="prose prose-lg prose-gray dark:prose-invert max-w-none 
+                 prose-headings:font-serif prose-headings:text-gray-900 dark:prose-headings:text-gray-100
+                 prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed
+                 prose-a:text-warm-600 dark:prose-a:text-warm-400 prose-a:no-underline hover:prose-a:underline
+                 prose-blockquote:border-warm-300 dark:prose-blockquote:border-warm-600 
+                 prose-blockquote:bg-warm-50 dark:prose-blockquote:bg-warm-900/20 
+                 prose-blockquote:rounded-r-lg prose-blockquote:py-2 prose-blockquote:px-4
+                 prose-img:rounded-lg prose-img:shadow-md">
+      <slot />
+    </main>
+    
+    {hasMusic && (
+      <section class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 font-serif">
+          🎵 {musicText}
+        </h3>
+        <MusicPlayer music={music} lang={currentLang} />
+      </section>
+    )}
+  </article>
+</Layout>
+

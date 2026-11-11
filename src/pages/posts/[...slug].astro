@@ -1,0 +1,291 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import MusicPlayer from '../../components/MusicPlayer.astro';
+import type { Language } from '../../utils/i18n';
+import { Marked } from 'marked';
+import { formatDateRange } from '../../utils/dateUtils';
+
+const customMarked = new Marked();
+customMarked.use({
+  renderer: {
+    image(token) {
+      const caption = token.title || token.text;
+      const imgHtml = `<img src="${token.href}" alt="${token.text || ''}" ${token.title ? `title="${token.title}"` : ''} class="max-w-full h-auto object-contain rounded-lg shadow-md" style="max-height: 800px; margin: 0 auto; display: block; margin-bottom: 0 !important;" loading="lazy" />`;
+      
+      if (caption) {
+        return `<figure style="display: flex; flex-direction: column; align-items: center; width: 100%; margin: 2rem auto;">
+  ${imgHtml}
+  <figcaption class="image-caption">${caption}</figcaption>
+</figure>`;
+      }
+      return `<figure style="display: flex; justify-content: center; width: 100%; margin: 2rem auto;">${imgHtml}</figure>`;
+    }
+  }
+});
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('posts');
+  const paths: any[] = [];
+  
+  for (const post of allPosts) {
+    if (post.slug.startsWith('en/')) {
+      // Old format - English posts with en/ prefix
+      paths.push({
+        params: { slug: post.slug.replace('en/', '') },
+        props: { ...post, lang: 'en' as Language },
+      });
+    } else if (post.slug.startsWith('it/')) {
+      // Old format - Italian posts with it/ prefix
+      paths.push({
+        params: { slug: post.slug.replace('it/', '') },
+        props: { ...post, lang: 'it' as Language },
+      });
+    } else {
+      // New format - multilingual files, create one route that handles both languages
+      paths.push({
+        params: { slug: post.slug },
+        props: { 
+          ...post, 
+          isMultilingual: true,
+          lang: 'en' as Language // Default, will be handled dynamically
+        },
+      });
+    }
+  }
+  
+  return paths;
+}
+
+const post = Astro.props;
+
+// Helper function to resolve multilingual frontmatter
+function resolveMultilingualData(data: any, targetLang: Language) {
+  const resolved = { ...data };
+  Object.keys(resolved).forEach(key => {
+    const value = resolved[key];
+    if (typeof value === 'object' && value !== null && !Array.isArray(value) && !value.lat) {
+      // Special handling for music object with nested multilingual description
+      if (key === 'music' && value.description && typeof value.description === 'object') {
+        resolved[key] = {
+          ...value,
+          description: value.description[targetLang] || value.description.en || value.description
+        };
+      } else if (value[targetLang]) {
+        resolved[key] = value[targetLang];
+      } else if (value.en) {
+        resolved[key] = value.en; // Fallback to English
+      }
+    }
+  });
+  return resolved;
+}
+
+// Helper function to extract content for specific language
+function extractLanguageContent(content: string, lang: Language) {
+  if (!content.includes('<!-- en -->') && !content.includes('<!-- it -->')) {
+    return content; // Single language content
+  }
+  
+  const sections = content.split(new RegExp(`<!--\\s*${lang}\\s*-->`));
+  if (sections.length > 1) {
+    const afterLangMarker = sections[1];
+    const nextLangMarker = lang === 'en' ? '<!-- it -->' : '<!-- en -->';
+    const beforeNextMarker = afterLangMarker.split(new RegExp(`<!--\\s*${lang === 'en' ? 'it' : 'en'}\\s*-->`));
+    return beforeNextMarker[0].trim();
+  }
+  
+  return '';
+}
+
+let processedDataEn, processedDataIt;
+let processedMarkdownEn, processedMarkdownIt;
+
+if (post.isMultilingual) {
+  // Multilingual content - process for both languages
+  const rawContent = post.body;
+  
+  // Process for English
+  processedDataEn = resolveMultilingualData(post.data, 'en');
+  processedDataEn.lang = 'en';
+  processedMarkdownEn = customMarked.parse(extractLanguageContent(rawContent, 'en'));
+  
+  // Process for Italian  
+  processedDataIt = resolveMultilingualData(post.data, 'it');
+  processedDataIt.lang = 'it';
+  processedMarkdownIt = customMarked.parse(extractLanguageContent(rawContent, 'it'));
+} else {
+  // Regular single-language content
+  const rendered = await post.render();
+  
+  if (post.lang === 'it') {
+    processedDataIt = resolveMultilingualData(post.data, 'it');
+    processedDataIt.lang = 'it';
+    processedMarkdownIt = customMarked.parse(post.body);
+    processedDataEn = null;
+    processedMarkdownEn = null;
+  } else {
+    processedDataEn = resolveMultilingualData(post.data, 'en');
+    processedDataEn.lang = 'en';
+    processedMarkdownEn = customMarked.parse(post.body);
+    processedDataIt = null;
+    processedMarkdownIt = null;
+  }
+}
+---
+
+<Layout title={processedDataEn?.title || processedDataIt?.title}>
+  <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- English Version -->
+    {processedDataEn && (
+      <div data-lang="en">
+        <header class="mb-8">
+          <div class="mb-4">
+            <a href="/blog/" class="inline-flex items-center text-sm text-warm-600 dark:text-warm-400 hover:text-warm-700 dark:hover:text-warm-300 transition-colors">
+              ← Back to archive
+            </a>
+          </div>
+          <div class="mb-4">
+            <h1 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-gray-100 leading-tight">
+              {processedDataEn.title}
+            </h1>
+          </div>
+          <div class="flex flex-col gap-2 text-sm text-gray-600 dark:text-gray-400">
+            <div class="flex items-center gap-2">
+              <span class="text-gray-900 dark:text-gray-100 font-medium">Event:</span>
+              <time datetime={processedDataEn.eventStartTime.toISOString()} class="font-medium">
+                {formatDateRange(processedDataEn.eventStartTime, processedDataEn.eventEndTime, 'en-US')}
+              </time>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-gray-900 dark:text-gray-100 font-medium">Published:</span>
+              <time datetime={processedDataEn.publishTime.toISOString()}>
+                {processedDataEn.publishTime.toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </time>
+            </div>
+          </div>
+          {processedDataEn.cover && (
+            <figure class="mt-6 flex flex-col items-center">
+              <img
+                src={processedDataEn.cover}
+                alt={processedDataEn.coverCaption || `Cover image for ${processedDataEn.title}`}
+                class="max-w-full h-auto object-contain rounded-lg shadow-md"
+                style="max-height: 600px;"
+              />
+              {processedDataEn.coverCaption && (
+                <figcaption class="image-caption">
+                  {processedDataEn.coverCaption}
+                </figcaption>
+              )}
+            </figure>
+          )}
+        </header>
+        
+        <main class="prose prose-lg prose-gray dark:prose-invert max-w-none 
+                     prose-headings:font-serif prose-headings:text-gray-900 dark:prose-headings:text-gray-100
+                     prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed
+                     prose-a:text-warm-600 dark:prose-a:text-warm-400 prose-a:no-underline hover:prose-a:underline
+                     prose-blockquote:border-warm-300 dark:prose-blockquote:border-warm-600 
+                     prose-blockquote:bg-warm-50 dark:prose-blockquote:bg-warm-900/20 
+                     prose-blockquote:rounded-r-lg prose-blockquote:py-2 prose-blockquote:px-4
+                     prose-img:rounded-lg prose-img:shadow-md">
+          <div set:html={processedMarkdownEn} />
+        </main>
+      </div>
+    )}
+    
+    <!-- Italian Version -->
+    {processedDataIt && (
+      <div data-lang="it" style="display: none;">
+        <header class="mb-8">
+          <div class="mb-4">
+            <a href="/blog/" class="inline-flex items-center text-sm text-warm-600 dark:text-warm-400 hover:text-warm-700 dark:hover:text-warm-300 transition-colors">
+              ← Torna all'archivio
+            </a>
+          </div>
+          <div class="mb-4">
+            <h1 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-gray-100 leading-tight">
+              {processedDataIt.title}
+            </h1>
+          </div>
+          <div class="flex flex-col gap-2 text-sm text-gray-600 dark:text-gray-400">
+            <div class="flex items-center gap-2">
+              <span class="text-gray-900 dark:text-gray-100 font-medium">Evento:</span>
+              <time datetime={processedDataIt.eventStartTime.toISOString()} class="font-medium">
+                {formatDateRange(processedDataIt.eventStartTime, processedDataIt.eventEndTime, 'it-IT')}
+              </time>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-gray-900 dark:text-gray-100 font-medium">Pubblicato:</span>
+              <time datetime={processedDataIt.publishTime.toISOString()}>
+                {processedDataIt.publishTime.toLocaleDateString('it-IT', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </time>
+            </div>
+          </div>
+          {processedDataIt.cover && (
+            <figure class="mt-6 flex flex-col items-center">
+              <img
+                src={processedDataIt.cover}
+                alt={processedDataIt.coverCaption || `Immagine di copertina per ${processedDataIt.title}`}
+                class="max-w-full h-auto object-contain rounded-lg shadow-md"
+                style="max-height: 600px;"
+              />
+              {processedDataIt.coverCaption && (
+                <figcaption class="image-caption">
+                  {processedDataIt.coverCaption}
+                </figcaption>
+              )}
+            </figure>
+          )}
+        </header>
+        
+        <main class="prose prose-lg prose-gray dark:prose-invert max-w-none 
+                     prose-headings:font-serif prose-headings:text-gray-900 dark:prose-headings:text-gray-100
+                     prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed
+                     prose-a:text-warm-600 dark:prose-a:text-warm-400 prose-a:no-underline hover:prose-a:underline
+                     prose-blockquote:border-warm-300 dark:prose-blockquote:border-warm-600 
+                     prose-blockquote:bg-warm-50 dark:prose-blockquote:bg-warm-900/20 
+                     prose-blockquote:rounded-r-lg prose-blockquote:py-2 prose-blockquote:px-4
+                     prose-img:rounded-lg prose-img:shadow-md">
+          <div set:html={processedMarkdownIt} />
+        </main>
+      </div>
+    )}
+
+    {/* Music Player section */}
+    {((processedDataEn?.music && processedDataEn.music.url) || (processedDataIt?.music && processedDataIt.music.url)) && (
+      <section class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 font-serif" data-lang="en">
+          📻 Soundtrack
+        </h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 font-serif" data-lang="it" style="display: none;">
+          📻 Colonna Sonora
+        </h3>
+        <div data-lang="en">
+          <MusicPlayer music={processedDataEn?.music} lang="en" />
+        </div>
+        <div data-lang="it" style="display: none;">
+          <MusicPlayer music={processedDataIt?.music} lang="it" />
+        </div>
+      </section>
+    )}
+
+  </article>
+</Layout>
+
+{post.isMultilingual && (
+  <script define:vars={{ enTitle: processedDataEn?.title, itTitle: processedDataIt?.title }}>
+    window.postTitles = {
+      'en': enTitle,
+      'it': itTitle
+    };
+  </script>
+)}

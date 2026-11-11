@@ -1,0 +1,162 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { t } from '../utils/i18n';
+---
+
+<Layout title="Horizon · Upupa">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Back to Hub / Breadcrumb -->
+    <div class="mb-8">
+      <a href="/" class="inline-flex items-center text-sm text-gray-500 hover:text-warm-700 dark:text-gray-400 dark:hover:text-warm-400 transition-colors">
+        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span>upupa.life</span>
+      </a>
+    </div>
+
+    <!-- English Content -->
+    <div data-lang="en">
+      <!-- Horizon Hero -->
+      <div class="text-center mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900 text-xs font-semibold tracking-wider uppercase mb-6">
+          <span>{t('home.horizon.badge', 'en')}</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-6">
+          {t('horizon.hero.title', 'en')}
+        </h1>
+        <p class="text-xl font-serif italic text-blue-600 dark:text-blue-400 mb-6 max-w-xl mx-auto">
+          {t('horizon.hero.subtitle', 'en')}
+        </p>
+        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          {t('horizon.hero.description', 'en')}
+        </p>
+      </div>
+
+      <!-- Horizon Pillars -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div class="p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
+          <div class="text-3xl mb-4">🧭</div>
+          <h2 class="text-xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-3">
+            {t('horizon.pillar1.title', 'en')}
+          </h2>
+          <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+            {t('horizon.pillar1.desc', 'en')}
+          </p>
+        </div>
+
+        <div class="p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
+          <div class="text-3xl mb-4">⚡️</div>
+          <h2 class="text-xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-3">
+            {t('horizon.pillar2.title', 'en')}
+          </h2>
+          <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+            {t('horizon.pillar2.desc', 'en')}
+          </p>
+        </div>
+
+        <div class="p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
+          <div class="text-3xl mb-4">🌱</div>
+          <h2 class="text-xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-3">
+            {t('horizon.pillar3.title', 'en')}
+          </h2>
+          <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+            {t('horizon.pillar3.desc', 'en')}
+          </p>
+        </div>
+      </div>
+
+      <!-- Horizon Manifesto / Vision Card -->
+      <div class="p-8 md:p-12 rounded-3xl bg-gradient-to-br from-blue-50/70 via-warm-50/40 to-white dark:from-zinc-900 dark:via-zinc-900/90 dark:to-zinc-950 border border-blue-100 dark:border-zinc-800 mb-16">
+        <h3 class="text-2xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-4">
+          The Gaze Forward
+        </h3>
+        <p class="text-gray-700 dark:text-gray-300 leading-relaxed text-base mb-6">
+          Every journey requires two anchors: the memory of the ground we have walked, and the curiosity for the horizon yet to be reached. Horizon is where aspirations turn into experiments, projects take shape, and future journeys are dreamed before being lived.
+        </p>
+        <div class="flex flex-wrap items-center gap-4 pt-4 border-t border-gray-200/60 dark:border-zinc-800">
+          <a href="/diary/" class="inline-flex items-center text-sm font-semibold text-warm-700 dark:text-warm-400 hover:text-warm-800 dark:hover:text-warm-300">
+            <span>{t('horizon.cta.diary', 'en')}</span>
+            <span class="ml-1">→</span>
+          </a>
+          <span class="text-gray-300 dark:text-zinc-700">•</span>
+          <a href="/about/" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200">
+            <span>{t('discover.about', 'en')}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Italian Content -->
+    <div data-lang="it" style="display: none;">
+      <!-- Horizon Hero -->
+      <div class="text-center mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900 text-xs font-semibold tracking-wider uppercase mb-6">
+          <span>{t('home.horizon.badge', 'it')}</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-6">
+          {t('horizon.hero.title', 'it')}
+        </h1>
+        <p class="text-xl font-serif italic text-blue-600 dark:text-blue-400 mb-6 max-w-xl mx-auto">
+          {t('horizon.hero.subtitle', 'it')}
+        </p>
+        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          {t('horizon.hero.description', 'it')}
+        </p>
+      </div>
+
+      <!-- Horizon Pillars -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div class="p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
+          <div class="text-3xl mb-4">🧭</div>
+          <h2 class="text-xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-3">
+            {t('horizon.pillar1.title', 'it')}
+          </h2>
+          <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+            {t('horizon.pillar1.desc', 'it')}
+          </p>
+        </div>
+
+        <div class="p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
+          <div class="text-3xl mb-4">⚡️</div>
+          <h2 class="text-xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-3">
+            {t('horizon.pillar2.title', 'it')}
+          </h2>
+          <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+            {t('horizon.pillar2.desc', 'it')}
+          </p>
+        </div>
+
+        <div class="p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
+          <div class="text-3xl mb-4">🌱</div>
+          <h2 class="text-xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-3">
+            {t('horizon.pillar3.title', 'it')}
+          </h2>
+          <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+            {t('horizon.pillar3.desc', 'it')}
+          </p>
+        </div>
+      </div>
+
+      <!-- Horizon Manifesto / Vision Card -->
+      <div class="p-8 md:p-12 rounded-3xl bg-gradient-to-br from-blue-50/70 via-warm-50/40 to-white dark:from-zinc-900 dark:via-zinc-900/90 dark:to-zinc-950 border border-blue-100 dark:border-zinc-800 mb-16">
+        <h3 class="text-2xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-4">
+          Lo Sguardo in Avanti
+        </h3>
+        <p class="text-gray-700 dark:text-gray-300 leading-relaxed text-base mb-6">
+          Ogni cammino ha bisogno di due ancore: la memoria della terra percorsa e la curiosità per l'orizzonte non ancora raggiunto. Horizon è lo spazio in cui le aspirazioni diventano esperimenti, i progetti prendono corpo e le prossime tappe vengono sognate prima di essere vissute.
+        </p>
+        <div class="flex flex-wrap items-center gap-4 pt-4 border-t border-gray-200/60 dark:border-zinc-800">
+          <a href="/diary/" class="inline-flex items-center text-sm font-semibold text-warm-700 dark:text-warm-400 hover:text-warm-800 dark:hover:text-warm-300">
+            <span>{t('horizon.cta.diary', 'it')}</span>
+            <span class="ml-1">→</span>
+          </a>
+          <span class="text-gray-300 dark:text-zinc-700">•</span>
+          <a href="/about/" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200">
+            <span>{t('discover.about', 'it')}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

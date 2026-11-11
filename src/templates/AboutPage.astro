@@ -1,0 +1,102 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConnectLinks from '../components/ConnectLinks.astro';
+import { t, type Language } from '../utils/i18n';
+
+export interface Props {
+  lang?: Language;
+}
+
+const { lang = 'en' } = Astro.props;
+
+// About page content (could be moved to a content collection in the future)
+const aboutContent = {
+  en: {
+    intro1: `Traveler, observer, explorer of the unexpected.
+
+I love to wander slowly, get lost in new places, and let what I encounter transform me.
+
+This space was born from a personal need: to resist the rush of social media and give space, instead, to reflection.
+
+I write only when the experience has had time to breathe, when it reveals something beyond the surface.
+
+Each post is a thread in a personal map of inner and outer worlds, shaped by the people I meet, the landscapes I cross, and the quiet thoughts that last longer than the journey itself.`,
+    intro2: ``
+  },
+  it: {
+    intro1: `Viaggiatore, osservatore, esploratore dell'inatteso.
+
+Amo vagare lentamente, perdermi in luoghi nuovi e lasciarmi cambiare da ciò che incontro.
+
+Questo spazio nasce da un bisogno personale: resistere alla fretta dei social e dare spazio, invece, alla riflessione.
+
+Scrivo solo quando l'esperienza ha avuto tempo di respirare, quando rivela qualcosa oltre la superficie.
+
+Ogni post è un filo in una mappa personale di mondi interiori ed esteriori, plasmata dalle persone che incontro, dai paesaggi che attraverso, e dai pensieri silenziosi che durano più del viaggio stesso.`,
+    intro2: ``
+  }
+};
+
+const contentEn = aboutContent.en;
+const contentIt = aboutContent.it;
+---
+
+<Layout>
+  <div class="max-w-4xl mx-auto px-2 sm:px-6 lg:px-8 py-12">
+    <div class="max-w-3xl mx-auto">
+      <!-- English Version -->
+      <div data-lang="en">
+        <!-- Header -->
+        <div class="text-center mb-8">
+          <h1 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-6">
+            {t('about.title', 'en')}
+          </h1>
+        </div>
+
+        <!-- Main Content -->
+        <div class="prose prose-lg dark:prose-invert max-w-none mb-12">
+          <div class="bg-warm-50 dark:bg-zinc-900 rounded-lg p-8 mb-8">
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg whitespace-pre-line text-left max-w-prose mx-auto">
+              {contentEn.intro1}
+            </p>
+          </div>
+        </div>
+
+        <!-- Social Links -->
+        <ConnectLinks 
+          connectTitle={t('connect.title', 'en')}
+          telegramLabel={t('connect.telegram', 'en')}
+          channelLabel={t('connect.channel', 'en')}
+          instagramLabel={t('connect.instagram', 'en')}
+        />
+      </div>
+
+      <!-- Italian Version -->
+      <div data-lang="it" style="display: none;">
+        <!-- Header -->
+        <div class="text-center mb-8">
+          <h1 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-6">
+            {t('about.title', 'it')}
+          </h1>
+        </div>
+
+        <!-- Main Content -->
+        <div class="prose prose-lg dark:prose-invert max-w-none mb-12">
+          <div class="bg-warm-50 dark:bg-zinc-900 rounded-lg p-8 mb-8">
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg whitespace-pre-line text-left max-w-prose mx-auto">
+              {contentIt.intro1}
+            </p>
+          </div>
+        </div>
+
+        <!-- Social Links -->
+        <ConnectLinks 
+          connectTitle={t('connect.title', 'it')}
+          telegramLabel={t('connect.telegram', 'it')}
+          channelLabel={t('connect.channel', 'it')}
+          instagramLabel={t('connect.instagram', 'it')}
+        />
+      </div>
+    </div>
+  </div>
+</Layout>
