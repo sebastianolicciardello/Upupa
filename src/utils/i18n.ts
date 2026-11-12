@@ -93,7 +93,7 @@ export const translations = {
 
     // Journal Dedicated Page
     'journal.page.title': 'Journal · Reflective Journal',
-    'hero.title': 'Journal',
+    'hero.title': 'Upupa Journal',
     'hero.description': `Moments don't ask to be shared while they're happening.
 
 They ask to be lived: fully, quietly, truthfully.
@@ -182,7 +182,7 @@ Here, I share stories, places, and thoughts after time has allowed them to take 
 
     // Journal Dedicated Page
     'journal.page.title': 'Journal · Diario Riflessivo',
-    'hero.title': 'Journal',
+    'hero.title': 'Upupa Journal',
     'hero.description': `I momenti non chiedono di essere condivisi subito.
 
 Chiedono di essere vissuti: davvero, fino in fondo, senza fretta.
