@@ -48,20 +48,20 @@ export const translations = {
   en: {
     // Brand & Navigation
     'brand.name': 'Upupa',
-    'brand.tagline': 'Horizon & Diary',
+    'brand.tagline': 'Horizon & Journal',
     'nav.home': 'Home',
     'nav.horizon': 'Horizon',
-    'nav.diary': 'Diary',
+    'nav.journal': 'Journal',
     'nav.archive': 'Archive',
     'nav.about': 'About',
-    'page.title': 'Upupa · Horizon & Diary',
+    'page.title': 'Upupa · Horizon & Journal',
     'footer.copyright': '2025-2026 - upupa.life - All rights reserved.',
     'footer.tagline': 'Between horizons to reach and moments to remember.',
 
     // Homepage Dual Hero
     'home.hero.title': 'Upupa',
     'home.hero.subtitle': 'Two Dimensions, One Journey',
-    'home.hero.description': 'A digital haven balanced between future directions and lived reflections. Explore what lies ahead in Horizon, or wander through settled memories in Upupa Diary.',
+    'home.hero.description': 'A digital haven balanced between future directions and lived reflections. Explore what lies ahead in Horizon, or wander through settled memories in Journal.',
     
     // Horizon Section Card on Home
     'home.horizon.badge': 'Direction & Vision',
@@ -70,30 +70,30 @@ export const translations = {
     'home.horizon.description': 'Paths, ambitions, creative projects, and the next milestones. Horizon is the gaze toward tomorrow, mapped with intention and openness to the unknown.',
     'home.horizon.cta': 'Explore Horizon',
     
-    // Diary Section Card on Home
-    'home.diary.badge': 'Reflections & Stories',
-    'home.diary.title': 'Upupa Diary',
-    'home.diary.subtitle': 'Moments Lived & Reflected',
-    'home.diary.description': 'A timeless reflective journal. Thoughts, places, and encounters shared not in haste, but only after time has allowed them to settle and reveal their meaning.',
-    'home.diary.cta': 'Enter Upupa Diary',
-    'home.diary.recentTitle': 'Latest Reflections from Diary',
+    // Journal Section Card on Home
+    'home.journal.badge': 'Reflections & Stories',
+    'home.journal.title': 'Journal',
+    'home.journal.subtitle': 'Moments Lived & Reflected',
+    'home.journal.description': 'A timeless reflective journal. Thoughts, places, and encounters shared not in haste, but only after time has allowed them to settle and reveal their meaning.',
+    'home.journal.cta': 'Enter Journal',
+    'home.journal.recentTitle': 'Latest Reflections from Journal',
 
     // Horizon Dedicated Page
     'horizon.page.title': 'Horizon · Upupa',
     'horizon.hero.title': 'Horizon',
     'horizon.hero.subtitle': 'Visions, Roads & What Comes Next',
-    'horizon.hero.description': 'Horizon is the space dedicated to looking forward. While the Diary preserves the echoes of the past, Horizon charts the trajectories, creative aspirations, and expeditions of tomorrow.',
+    'horizon.hero.description': 'Horizon is the space dedicated to looking forward. While the Journal preserves the echoes of the past, Horizon charts the trajectories, creative aspirations, and expeditions of tomorrow.',
     'horizon.pillar1.title': 'Explorations & Routes',
     'horizon.pillar1.desc': 'New geographies, slow travels, and nomadic trajectories waiting to be mapped.',
     'horizon.pillar2.title': 'Projects & Creation',
     'horizon.pillar2.desc': 'Digital crafts, writing, ideas in progress, and creative ventures.',
     'horizon.pillar3.title': 'Life Philosophy',
     'horizon.pillar3.desc': 'Intentional living, sustainable nomadism, and conscious evolution.',
-    'horizon.cta.diary': 'Read the Diary reflections',
+    'horizon.cta.journal': 'Read the Journal reflections',
 
-    // Diary Dedicated Page
-    'diary.page.title': 'Upupa Diary · Reflective Journal',
-    'hero.title': 'Upupa Diary',
+    // Journal Dedicated Page
+    'journal.page.title': 'Journal · Reflective Journal',
+    'hero.title': 'Journal',
     'hero.description': `Moments don't ask to be shared while they're happening.
 
 They ask to be lived: fully, quietly, truthfully.
@@ -105,7 +105,7 @@ It is a space for reflections that surface not in real-time, but in real depth.
 Here, I share stories, places, and thoughts after time has allowed them to take root.`,
     
     // Blog / Archive
-    'blog.title': 'Upupa Diary Archive',
+    'blog.title': 'Journal Archive',
     'blog.subtitle': 'All thoughts, travels, and moments collected through time.',
     'blog.description': 'All thoughts, travels, and moments collected through time.',
     'blog.empty': 'No reflections found',
@@ -137,20 +137,20 @@ Here, I share stories, places, and thoughts after time has allowed them to take 
   it: {
     // Brand & Navigation
     'brand.name': 'Upupa',
-    'brand.tagline': 'Horizon & Diary',
+    'brand.tagline': 'Horizon & Journal',
     'nav.home': 'Home',
     'nav.horizon': 'Horizon',
-    'nav.diary': 'Diary',
+    'nav.journal': 'Journal',
     'nav.archive': 'Archivio',
     'nav.about': 'Chi Sono',
-    'page.title': 'Upupa · Horizon & Diary',
+    'page.title': 'Upupa · Horizon & Journal',
     'footer.copyright': '2025-2026 - upupa.life - Tutti i diritti riservati.',
     'footer.tagline': 'Tra orizzonti da raggiungere e momenti da ricordare.',
 
     // Homepage Dual Hero
     'home.hero.title': 'Upupa',
     'home.hero.subtitle': 'Due Dimensioni, Un Solo Cammino',
-    'home.hero.description': 'Uno spazio digitale sospeso tra direzioni future e riflessioni vissute. Esplora le visioni del domani in Horizon, o lasciati accompagnare dalle memorie sedimentate di Upupa Diary.',
+    'home.hero.description': 'Uno spazio digitale sospeso tra direzioni future e riflessioni vissute. Esplora le visioni del domani in Horizon, o lasciati accompagnare dalle memorie sedimentate di Journal.',
     
     // Horizon Section Card on Home
     'home.horizon.badge': 'Direzione & Visione',
@@ -159,30 +159,30 @@ Here, I share stories, places, and thoughts after time has allowed them to take 
     'home.horizon.description': 'Rotte, ambizioni, progetti creativi e le prossime tappe. Horizon è lo sguardo puntato su ciò che viene, tracciato con consapevolezza e apertura all\'inatteso.',
     'home.horizon.cta': 'Scopri Horizon',
     
-    // Diary Section Card on Home
-    'home.diary.badge': 'Riflessioni & Storie',
-    'home.diary.title': 'Upupa Diary',
-    'home.diary.subtitle': 'Momenti Vissuti e Sedimentati',
-    'home.diary.description': 'Un diario riflessivo senza tempo. Pensieri, luoghi e incontri condivisi non nella fretta, ma solo quando il tempo ha permesso loro di depositarsi e rivelare il loro senso.',
-    'home.diary.cta': 'Entra in Upupa Diary',
-    'home.diary.recentTitle': 'Ultime Riflessioni dal Diary',
+    // Journal Section Card on Home
+    'home.journal.badge': 'Riflessioni & Storie',
+    'home.journal.title': 'Journal',
+    'home.journal.subtitle': 'Momenti Vissuti e Sedimentati',
+    'home.journal.description': 'Un diario riflessivo senza tempo. Pensieri, luoghi e incontri condivisi non nella fretta, ma solo quando il tempo ha permesso loro di depositarsi e rivelare il loro senso.',
+    'home.journal.cta': 'Entra in Journal',
+    'home.journal.recentTitle': 'Ultime Riflessioni dal Journal',
 
     // Horizon Dedicated Page
     'horizon.page.title': 'Horizon · Upupa',
     'horizon.hero.title': 'Horizon',
     'horizon.hero.subtitle': 'Visioni, Rotte & Il Prossimo Passo',
-    'horizon.hero.description': 'Horizon è lo spazio dedicato allo sguardo in avanti. Se il Diary custodisce l\'eco del vissuto, Horizon traccia le traiettorie, le aspirazioni creative e le spedizioni del domani.',
+    'horizon.hero.description': 'Horizon è lo spazio dedicato allo sguardo in avanti. Se il Journal custodisce l\'eco del vissuto, Horizon traccia le traiettorie, le aspirazioni creative e le spedizioni del domani.',
     'horizon.pillar1.title': 'Esplorazioni & Rotte',
     'horizon.pillar1.desc': 'Nuove geografie, viaggi lenti e traiettorie nomadiche pronte per essere disegnate.',
     'horizon.pillar2.title': 'Progetti & Creazione',
     'horizon.pillar2.desc': 'Artigianato digitale, scrittura, idee in fermento e percorsi creativi.',
     'horizon.pillar3.title': 'Filosofia di Vita',
     'horizon.pillar3.desc': 'Vivere intenzionale, nomadismo sostenibile ed evoluzione personale.',
-    'horizon.cta.diary': 'Leggi le riflessioni del Diary',
+    'horizon.cta.journal': 'Leggi le riflessioni del Journal',
 
-    // Diary Dedicated Page
-    'diary.page.title': 'Upupa Diary · Diario Riflessivo',
-    'hero.title': 'Upupa Diary',
+    // Journal Dedicated Page
+    'journal.page.title': 'Journal · Diario Riflessivo',
+    'hero.title': 'Journal',
     'hero.description': `I momenti non chiedono di essere condivisi subito.
 
 Chiedono di essere vissuti: davvero, fino in fondo, senza fretta.
@@ -192,7 +192,7 @@ Questo diario nasce per raccogliere le esperienze quando si sono sedimentate, qu
 È un luogo per riflessioni lente, nate dal viaggio, ma condivise solo quando hanno trovato la loro forma.`,
     
     // Blog / Archive
-    'blog.title': 'Archivio di Upupa Diary',
+    'blog.title': 'Archivio di Journal',
     'blog.subtitle': 'Tutti i pensieri, viaggi e momenti raccolti nel tempo.',
     'blog.description': 'Tutti i pensieri, viaggi e momenti raccolti nel tempo.',
     'blog.empty': 'Nessuna riflessione trovata',

@@ -1,6 +1,6 @@
 # Upupa · upupa.life
 
-> **Two Dimensions, One Journey: Horizon & Diary**
+> **Two Dimensions, One Journey: Horizon & Journal**
 
 Il portale e spazio digitale di Sebastiano Licciardello (`upupa.life`).
 
@@ -11,7 +11,7 @@ Il portale e spazio digitale di Sebastiano Licciardello (`upupa.life`).
 ### 🧭 Horizon (`/horizon/`)
 Lo spazio dedicato allo sguardo in avanti: rotte future, progetti creativi, esplorazioni e visione di vita.
 
-### 📖 Upupa Diary (`/diary/`)
+### 📖 Journal (`/journal/`)
 Il diario riflessivo e intimo (derivato da *The Nomad Upupa*): racconti, luoghi, musica (YouTube Music player) e memorie raccolte con calma e condivise solo quando hanno trovato la loro forma compiuta.
 
 ---
