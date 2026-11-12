@@ -5,9 +5,10 @@ import '../styles/global.css';
 export interface Props {
 	title?: string;
 	lang?: Language;
+	isHome?: boolean;
 }
 
-const { title, lang } = Astro.props;
+const { title, lang, isHome = false } = Astro.props;
 // Use default English, language will be set dynamically on client
 const currentLang: Language = 'en';
 const pageTitle = title || t('page.title', currentLang);
@@ -59,18 +60,31 @@ const alternateLang = getAlternateLanguage(currentLang);
 					
 					<!-- Desktop Navigation -->
 					<div class="hidden md:flex items-center space-x-6">
-						<span data-lang="en" class="flex items-center space-x-6">
-							<a href="/horizon/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.horizon', 'en')}</a>
-							<a href="/diary/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.diary', 'en')}</a>
-							<a href="/blog/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.archive', 'en')}</a>
-							<a href="/about/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.about', 'en')}</a>
-						</span>
-						<span data-lang="it" style="display: none;" class="flex items-center space-x-6">
-							<a href="/horizon/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.horizon', 'it')}</a>
-							<a href="/diary/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.diary', 'it')}</a>
-							<a href="/blog/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.archive', 'it')}</a>
-							<a href="/about/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.about', 'it')}</a>
-						</span>
+						{isHome ? (
+							<>
+								<span data-lang="en">
+									<a href="/about/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.about', 'en')}</a>
+								</span>
+								<span data-lang="it" style="display: none;">
+									<a href="/about/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.about', 'it')}</a>
+								</span>
+							</>
+						) : (
+							<>
+								<span data-lang="en" class="flex items-center space-x-6">
+									<a href="/horizon/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.horizon', 'en')}</a>
+									<a href="/diary/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.diary', 'en')}</a>
+									<a href="/blog/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.archive', 'en')}</a>
+									<a href="/about/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.about', 'en')}</a>
+								</span>
+								<span data-lang="it" style="display: none;" class="flex items-center space-x-6">
+									<a href="/horizon/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.horizon', 'it')}</a>
+									<a href="/diary/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.diary', 'it')}</a>
+									<a href="/blog/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.archive', 'it')}</a>
+									<a href="/about/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.about', 'it')}</a>
+								</span>
+							</>
+						)}
 						<button id="lang-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" aria-label="Switch language">
 							<span class="text-sm font-medium" id="lang-button-text">
 								<span data-lang="en">IT</span>
@@ -103,18 +117,31 @@ const alternateLang = getAlternateLanguage(currentLang);
 				<!-- Mobile Menu -->
 				<div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-zinc-900">
 					<div class="px-2 pt-2 pb-3 space-y-1">
-						<span data-lang="en">
-							<a href="/horizon/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.horizon', 'en')}</a>
-							<a href="/diary/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.diary', 'en')}</a>
-							<a href="/blog/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.archive', 'en')}</a>
-							<a href="/about/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.about', 'en')}</a>
-						</span>
-						<span data-lang="it" style="display: none;">
-							<a href="/horizon/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.horizon', 'it')}</a>
-							<a href="/diary/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.diary', 'it')}</a>
-							<a href="/blog/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.archive', 'it')}</a>
-							<a href="/about/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.about', 'it')}</a>
-						</span>
+						{isHome ? (
+							<>
+								<span data-lang="en">
+									<a href="/about/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.about', 'en')}</a>
+								</span>
+								<span data-lang="it" style="display: none;">
+									<a href="/about/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.about', 'it')}</a>
+								</span>
+							</>
+						) : (
+							<>
+								<span data-lang="en">
+									<a href="/horizon/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.horizon', 'en')}</a>
+									<a href="/diary/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.diary', 'en')}</a>
+									<a href="/blog/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.archive', 'en')}</a>
+									<a href="/about/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.about', 'en')}</a>
+								</span>
+								<span data-lang="it" style="display: none;">
+									<a href="/horizon/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.horizon', 'it')}</a>
+									<a href="/diary/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.diary', 'it')}</a>
+									<a href="/blog/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.archive', 'it')}</a>
+									<a href="/about/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.about', 'it')}</a>
+								</span>
+							</>
+						)}
 						
 						<!-- Settings separator -->
 						<div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
