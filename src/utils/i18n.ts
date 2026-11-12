@@ -55,7 +55,7 @@ export const translations = {
     'nav.archive': 'Archive',
     'nav.about': 'About',
     'page.title': 'Upupa · Horizon & Diary',
-    'footer.copyright': '2025-2026 Upupa · upupa.life. All rights reserved.',
+    'footer.copyright': '2025-2026 - upupa.life - All rights reserved.',
     'footer.tagline': 'Between horizons to reach and moments to remember.',
 
     // Homepage Dual Hero
@@ -144,7 +144,7 @@ Here, I share stories, places, and thoughts after time has allowed them to take 
     'nav.archive': 'Archivio',
     'nav.about': 'Chi Sono',
     'page.title': 'Upupa · Horizon & Diary',
-    'footer.copyright': '2025-2026 Upupa · upupa.life. Tutti i diritti riservati.',
+    'footer.copyright': '2025-2026 - upupa.life - Tutti i diritti riservati.',
     'footer.tagline': 'Tra orizzonti da raggiungere e momenti da ricordare.',
 
     // Homepage Dual Hero
