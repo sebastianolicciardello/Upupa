@@ -1,10 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import MusicPlayer from '../../components/MusicPlayer.astro';
-import type { Language } from '../../utils/i18n';
+import Layout from '../../../layouts/Layout.astro';
+import MusicPlayer from '../../../components/MusicPlayer.astro';
+import type { Language } from '../../../utils/i18n';
 import { Marked } from 'marked';
-import { formatDateRange } from '../../utils/dateUtils';
+import { formatDateRange } from '../../../utils/dateUtils';
 
 const customMarked = new Marked();
 customMarked.use({
@@ -141,7 +141,7 @@ if (post.isMultilingual) {
       <div data-lang="en">
         <header class="mb-8">
           <div class="mb-4">
-            <a href="/blog/" class="inline-flex items-center text-sm text-warm-600 dark:text-warm-400 hover:text-warm-700 dark:hover:text-warm-300 transition-colors">
+            <a href="/journal/blog/" class="inline-flex items-center text-sm text-warm-600 dark:text-warm-400 hover:text-warm-700 dark:hover:text-warm-300 transition-colors">
               ← Back to archive
             </a>
           </div>
@@ -203,7 +203,7 @@ if (post.isMultilingual) {
       <div data-lang="it" style="display: none;">
         <header class="mb-8">
           <div class="mb-4">
-            <a href="/blog/" class="inline-flex items-center text-sm text-warm-600 dark:text-warm-400 hover:text-warm-700 dark:hover:text-warm-300 transition-colors">
+            <a href="/journal/blog/" class="inline-flex items-center text-sm text-warm-600 dark:text-warm-400 hover:text-warm-700 dark:hover:text-warm-300 transition-colors">
               ← Torna all'archivio
             </a>
           </div>

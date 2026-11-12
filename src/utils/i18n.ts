@@ -7,6 +7,23 @@ export const languages: Record<Language, { name: string; flag: string }> = {
 
 export const defaultLanguage: Language = 'en';
 
+/**
+ * Language from the device/system settings: Italian if any of the user's
+ * preferred languages is Italian, English otherwise.
+ */
+export function getDeviceLanguage(): Language {
+  if (typeof navigator !== 'undefined') {
+    const deviceLangs = navigator.languages && navigator.languages.length
+      ? navigator.languages
+      : [navigator.language || ''];
+    if (deviceLangs.some(l => String(l).toLowerCase().startsWith('it'))) {
+      return 'it';
+    }
+  }
+
+  return defaultLanguage;
+}
+
 export function detectLanguageFromUrl(url: string): Language {
   // Check localStorage first for saved preference
   if (typeof localStorage !== 'undefined') {
@@ -16,15 +33,8 @@ export function detectLanguageFromUrl(url: string): Language {
     }
   }
   
-  // Check browser language for first visit
-  if (typeof navigator !== 'undefined') {
-    const browserLang = navigator.language.toLowerCase();
-    if (browserLang.startsWith('it')) {
-      return 'it';
-    }
-  }
-  
-  return 'en';
+  // First visit: follow the device language
+  return getDeviceLanguage();
 }
 
 export function getLanguageFromSlug(slug: string): Language {
@@ -247,14 +257,8 @@ export function getCurrentLanguage(): Language {
     }
   }
   
-  if (typeof navigator !== 'undefined') {
-    const browserLang = navigator.language.toLowerCase();
-    if (browserLang.startsWith('it')) {
-      return 'it';
-    }
-  }
-  
-  return 'en';
+  // First visit: follow the device language
+  return getDeviceLanguage();
 }
 
 export function setLanguage(lang: Language): void {

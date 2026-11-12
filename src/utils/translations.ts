@@ -10,7 +10,7 @@ export function t(key: string, lang: Language = 'en'): string {
 
 export function getPostUrl(slug: string, lang: Language = 'en'): string {
   const cleanSlug = slug.replace(/^(it|en)\//, '');
-  return `/posts/${cleanSlug}/`;
+  return `/journal/posts/${cleanSlug}/`;
 }
 
 export function getLocaleString(lang: Language = 'en'): string {

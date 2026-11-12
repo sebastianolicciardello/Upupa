@@ -6,13 +6,22 @@ export interface Props {
 	title?: string;
 	lang?: Language;
 	isHome?: boolean;
+	/**
+	 * If true the page is rendered in a single language (the one passed via `lang`)
+	 * and the language toggle is hidden. If false (default) the page is bilingual
+	 * and the toggle is shown.
+	 */
+	singleLanguage?: boolean;
 }
 
-const { title, lang, isHome = false } = Astro.props;
-// Use default English, language will be set dynamically on client
-const currentLang: Language = 'en';
+const { title, lang, isHome = false, singleLanguage = false } = Astro.props;
+// Bilingual pages are rendered in English on the server and switch dynamically on the
+// client (saved preference first, then the device language). Single-language pages are
+// always rendered in `lang` (Italian by default).
+const currentLang: Language = singleLanguage ? (lang ?? 'it') : 'en';
 const pageTitle = title || t('page.title', currentLang);
-const alternateLang = getAlternateLanguage(currentLang);
+// Languages rendered in the navigation: both for bilingual pages, one for single-language pages.
+const navLangs: Language[] = singleLanguage ? [currentLang] : ['en', 'it'];
 ---
 
 <!doctype html>
@@ -35,17 +44,35 @@ const alternateLang = getAlternateLanguage(currentLang);
 			html[data-initial-lang="it"] [data-lang="it"] { display: block !important; }
 			html[data-initial-lang="en"] [data-lang="en"] { display: block !important; }
 		</style>
-		<script>
-			// Pre-load language detection to prevent flash - execute immediately
+		<script is:inline define:vars={{ isSingleLanguage: singleLanguage, initialLang: currentLang }}>
+			// Runs before paint: resolve language and theme to avoid any flash.
 			(function() {
-				const savedLang = localStorage.getItem('language-preference');
-				if (savedLang && (savedLang === 'it' || savedLang === 'en')) {
-					document.documentElement.setAttribute('data-initial-lang', savedLang);
+				const root = document.documentElement;
+
+				// --- Language ---
+				if (isSingleLanguage) {
+					// Single-language page: always use the language rendered by the server
+					root.setAttribute('data-initial-lang', initialLang);
 				} else {
-					const browserLang = navigator.language.toLowerCase();
-					const detectedLang = browserLang.startsWith('it') ? 'it' : 'en';
-					document.documentElement.setAttribute('data-initial-lang', detectedLang);
+					// Saved preference wins, otherwise follow the device language
+					const savedLang = localStorage.getItem('language-preference');
+					if (savedLang === 'it' || savedLang === 'en') {
+						root.setAttribute('data-initial-lang', savedLang);
+					} else {
+						const deviceLangs = navigator.languages && navigator.languages.length
+							? navigator.languages
+							: [navigator.language || ''];
+						const isItalian = deviceLangs.some(l => String(l).toLowerCase().startsWith('it'));
+						root.setAttribute('data-initial-lang', isItalian ? 'it' : 'en');
+					}
 				}
+
+				// --- Theme ---
+				// Saved preference wins, otherwise follow the device appearance
+				const savedTheme = localStorage.getItem('theme');
+				const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+				const isDark = savedTheme === 'dark' || savedTheme === 'light' ? savedTheme === 'dark' : prefersDark;
+				root.classList.toggle('dark', isDark);
 			})();
 		</script>
 	</head>
@@ -55,42 +82,38 @@ const alternateLang = getAlternateLanguage(currentLang);
 				<div class="flex justify-between items-center h-16">
 					<a href="/" class="flex items-center space-x-2 text-xl font-serif font-bold text-gray-900 dark:text-gray-100 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">
 						<span>Upupa</span>
-						<span class="text-xs font-mono font-normal px-2 py-0.5 rounded-full bg-warm-100 dark:bg-warm-900/60 text-warm-700 dark:text-warm-300 border border-warm-200 dark:border-warm-800">life</span>
 					</a>
 					
 					<!-- Desktop Navigation -->
 					<div class="hidden md:flex items-center space-x-6">
 						{isHome ? (
 							<>
-								<span data-lang="en">
-									<a href="/about/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.about', 'en')}</a>
-								</span>
-								<span data-lang="it" style="display: none;">
-									<a href="/about/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.about', 'it')}</a>
-								</span>
+								{navLangs.map((l, i) => (
+									<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>
+										<a href="/about/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.about', l)}</a>
+									</span>
+								))}
 							</>
 						) : (
 							<>
-								<span data-lang="en" class="flex items-center space-x-6">
-									<a href="/horizon/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.horizon', 'en')}</a>
-									<a href="/journal/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.journal', 'en')}</a>
-									<a href="/blog/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.archive', 'en')}</a>
-									<a href="/about/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.about', 'en')}</a>
-								</span>
-								<span data-lang="it" style="display: none;" class="flex items-center space-x-6">
-									<a href="/horizon/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.horizon', 'it')}</a>
-									<a href="/journal/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.journal', 'it')}</a>
-									<a href="/blog/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.archive', 'it')}</a>
-									<a href="/about/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.about', 'it')}</a>
-								</span>
+								{navLangs.map((l, i) => (
+									<span data-lang={l} style={i === 0 ? undefined : 'display: none;'} class="flex items-center space-x-6">
+										<a href="/horizon/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.horizon', l)}</a>
+										<a href="/journal/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.journal', l)}</a>
+										<a href="/journal/blog/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.archive', l)}</a>
+										<a href="/about/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.about', l)}</a>
+									</span>
+								))}
 							</>
 						)}
-						<button id="lang-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" aria-label="Switch language">
-							<span class="text-sm font-medium" id="lang-button-text">
-								<span data-lang="en">IT</span>
-								<span data-lang="it" style="display: none;">EN</span>
-							</span>
-						</button>
+						{!singleLanguage && (
+							<button id="lang-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" aria-label="Switch language">
+								<span class="text-sm font-medium" id="lang-button-text">
+									<span data-lang="en">IT</span>
+									<span data-lang="it" style="display: none;">EN</span>
+								</span>
+							</button>
+						)}
 						<button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" aria-label="Toggle theme">
 							<svg id="theme-toggle-light-icon" class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
 								<path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
@@ -119,27 +142,22 @@ const alternateLang = getAlternateLanguage(currentLang);
 					<div class="px-2 pt-2 pb-3 space-y-1">
 						{isHome ? (
 							<>
-								<span data-lang="en">
-									<a href="/about/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.about', 'en')}</a>
-								</span>
-								<span data-lang="it" style="display: none;">
-									<a href="/about/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.about', 'it')}</a>
-								</span>
+								{navLangs.map((l, i) => (
+									<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>
+										<a href="/about/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.about', l)}</a>
+									</span>
+								))}
 							</>
 						) : (
 							<>
-								<span data-lang="en">
-									<a href="/horizon/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.horizon', 'en')}</a>
-									<a href="/journal/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.journal', 'en')}</a>
-									<a href="/blog/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.archive', 'en')}</a>
-									<a href="/about/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.about', 'en')}</a>
-								</span>
-								<span data-lang="it" style="display: none;">
-									<a href="/horizon/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.horizon', 'it')}</a>
-									<a href="/journal/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.journal', 'it')}</a>
-									<a href="/blog/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.archive', 'it')}</a>
-									<a href="/about/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.about', 'it')}</a>
-								</span>
+								{navLangs.map((l, i) => (
+									<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>
+										<a href="/horizon/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.horizon', l)}</a>
+										<a href="/journal/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.journal', l)}</a>
+										<a href="/journal/blog/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.archive', l)}</a>
+										<a href="/about/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.about', l)}</a>
+									</span>
+								))}
 							</>
 						)}
 						
@@ -148,22 +166,25 @@ const alternateLang = getAlternateLanguage(currentLang);
 						
 						<!-- Language and Theme toggles -->
 						<div class="px-3 py-2 space-y-3">
-							<div class="flex items-center justify-between">
-								<span class="text-sm text-gray-600 dark:text-gray-400">
-									<span data-lang="en">{t('settings.language', 'en')}</span>
-									<span data-lang="it" style="display: none;">{t('settings.language', 'it')}</span>
-								</span>
-								<button id="lang-toggle-mobile" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" aria-label="Switch language">
-									<span class="text-sm font-medium" id="lang-button-text-mobile">
-										<span data-lang="en">IT</span>
-										<span data-lang="it" style="display: none;">EN</span>
+							{!singleLanguage && (
+								<div class="flex items-center justify-between">
+									<span class="text-sm text-gray-600 dark:text-gray-400">
+										<span data-lang="en">{t('settings.language', 'en')}</span>
+										<span data-lang="it" style="display: none;">{t('settings.language', 'it')}</span>
 									</span>
-								</button>
-							</div>
+									<button id="lang-toggle-mobile" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" aria-label="Switch language">
+										<span class="text-sm font-medium" id="lang-button-text-mobile">
+											<span data-lang="en">IT</span>
+											<span data-lang="it" style="display: none;">EN</span>
+										</span>
+									</button>
+								</div>
+							)}
 							<div class="flex items-center justify-between">
 								<span class="text-sm text-gray-600 dark:text-gray-400">
-									<span data-lang="en">{t('settings.theme', 'en')}</span>
-									<span data-lang="it" style="display: none;">{t('settings.theme', 'it')}</span>
+									{navLangs.map((l, i) => (
+										<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>{t('settings.theme', l)}</span>
+									))}
 								</span>
 								<button id="theme-toggle-mobile" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" aria-label="Toggle theme">
 									<svg id="theme-toggle-light-icon-mobile" class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
@@ -186,8 +207,9 @@ const alternateLang = getAlternateLanguage(currentLang);
 			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 				<div class="flex flex-col items-center justify-center text-center">
 					<div class="text-xs text-gray-400 dark:text-gray-500 w-full text-center">
-						<p data-lang="en">&copy; {t('footer.copyright', 'en')}</p>
-						<p data-lang="it" style="display: none;">&copy; {t('footer.copyright', 'it')}</p>
+						{navLangs.map((l, i) => (
+							<p data-lang={l} style={i === 0 ? undefined : 'display: none;'}>&copy; {t('footer.copyright', l)}</p>
+						))}
 					</div>
 				</div>
 			</div>
@@ -195,21 +217,23 @@ const alternateLang = getAlternateLanguage(currentLang);
 	</body>
 </html>
 
-<script>
-	// Language system initialization
-	function getCurrentLanguage() {
+<script define:vars={{ SINGLE_LANGUAGE: singleLanguage, SSR_LANGUAGE: currentLang }}>
+	// Returns a valid stored language, or null when the user never picked one.
+	function getStoredLanguage() {
 		const saved = localStorage.getItem('language-preference');
-		if (saved && (saved === 'it' || saved === 'en')) {
-			return saved;
-		}
-		
-		// Check browser language for first visit
-		const browserLang = navigator.language.toLowerCase();
-		if (browserLang.startsWith('it')) {
-			return 'it';
-		}
-		
-		return 'en';
+		return saved === 'it' || saved === 'en' ? saved : null;
+	}
+
+	// First visit: follow the device/system language settings (Italian if any of them is Italian).
+	function getDeviceLanguage() {
+		const deviceLangs = navigator.languages && navigator.languages.length
+			? navigator.languages
+			: [navigator.language || ''];
+		return deviceLangs.some(l => String(l).toLowerCase().startsWith('it')) ? 'it' : 'en';
+	}
+
+	function getCurrentLanguage() {
+		return getStoredLanguage() || getDeviceLanguage();
 	}
 	
 	function updateLanguageContent(lang) {
@@ -233,6 +257,12 @@ const alternateLang = getAlternateLanguage(currentLang);
 		document.documentElement.setAttribute('data-language', lang);
 		document.documentElement.setAttribute('data-initial-lang', lang);
 	}
+
+	// Bilingual pages honour the saved/detected language, single-language pages
+	// always stay on the language rendered by the server.
+	function resolvePageLanguage() {
+		return SINGLE_LANGUAGE ? SSR_LANGUAGE : getCurrentLanguage();
+	}
 	
 	function setLanguage(lang) {
 		localStorage.setItem('language-preference', lang);
@@ -241,12 +271,12 @@ const alternateLang = getAlternateLanguage(currentLang);
 	
 	// Expose functions globally for other components
 	window.updateLanguageContent = updateLanguageContent;
-	window.getCurrentLanguage = getCurrentLanguage;
+	window.getCurrentLanguage = resolvePageLanguage;
 	window.setLanguage = setLanguage;
 	
 	// Initialize language system when DOM is ready
 	document.addEventListener('DOMContentLoaded', () => {
-		const currentLang = getCurrentLanguage();
+		const currentLang = resolvePageLanguage();
 		updateLanguageContent(currentLang);
 		// Show page after language is set
 		document.documentElement.style.visibility = 'visible';
@@ -257,7 +287,7 @@ const alternateLang = getAlternateLanguage(currentLang);
 		const langToggleMobile = document.getElementById('lang-toggle-mobile');
 		
 		function handleLanguageToggle() {
-			const currentLang = getCurrentLanguage();
+			const currentLang = resolvePageLanguage();
 			const newLang = currentLang === 'en' ? 'it' : 'en';
 			setLanguage(newLang);
 		}
@@ -267,29 +297,22 @@ const alternateLang = getAlternateLanguage(currentLang);
 	});
 
 	// Theme toggle functionality
+	// The initial theme (saved preference, otherwise the device appearance) is already
+	// applied pre-paint by the inline script in <head> to avoid a flash.
 	const themeToggle = document.getElementById('theme-toggle');
 	const themeToggleMobile = document.getElementById('theme-toggle-mobile');
 	const html = document.documentElement;
-	
-	// Check for saved theme preference or default to light mode
-	const savedTheme = localStorage.getItem('theme');
-	if (savedTheme) {
-		html.classList.toggle('dark', savedTheme === 'dark');
-	} else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-		html.classList.add('dark');
+
+	function toggleTheme() {
+		html.classList.toggle('dark');
+		localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
 	}
 	
 	// Theme toggle for desktop
-	themeToggle?.addEventListener('click', () => {
-		html.classList.toggle('dark');
-		localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
-	});
+	themeToggle?.addEventListener('click', toggleTheme);
 	
 	// Theme toggle for mobile
-	themeToggleMobile?.addEventListener('click', () => {
-		html.classList.toggle('dark');
-		localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
-	});
+	themeToggleMobile?.addEventListener('click', toggleTheme);
 	
 	// Mobile menu functionality
 	const mobileMenuButton = document.getElementById('mobile-menu-button');

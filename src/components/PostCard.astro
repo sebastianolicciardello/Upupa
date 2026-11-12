@@ -8,7 +8,7 @@ export interface Props {
 
 const { post, lang = 'en' } = Astro.props;
 
-const postUrl = `/posts/${post.slug.replace('it/', '').replace('en/', '')}/`;
+const postUrl = `/journal/posts/${post.slug.replace('it/', '').replace('en/', '')}/`;
 
 const locale = lang === 'it' ? 'it-IT' : 'en-US';
 const readMoreText = lang === 'it' ? 'Leggi di più' : 'Read more';

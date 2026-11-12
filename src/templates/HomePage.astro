@@ -3,15 +3,11 @@ import Layout from '../layouts/Layout.astro';
 import DualHero from '../components/DualHero.astro';
 ---
 
-<Layout title="Upupa · Horizon & Journal" isHome={true}>
+<Layout title="Upupa · Horizon & Journal" isHome={true} lang="it" singleLanguage>
   <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 flex flex-col justify-center min-h-[calc(100vh-16rem)]">
-    <!-- English Version -->
-    <div data-lang="en">
-      <DualHero lang="en" />
-    </div>
 
     <!-- Italian Version -->
-    <div data-lang="it" style="display: none;">
+    <div data-lang="it">
       <DualHero lang="it" />
     </div>
   </div>
