@@ -8,27 +8,9 @@ export interface Props {
 const { lang } = Astro.props;
 ---
 
-<div class="mb-20">
-  <!-- Main Home Brand Hero -->
-  <div class="text-center max-w-3xl mx-auto mb-14">
-    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-warm-100 dark:bg-warm-900/50 text-warm-800 dark:text-warm-300 text-xs font-medium tracking-wide uppercase mb-6">
-      <span>upupa.life</span>
-      <span>•</span>
-      <span>{t('brand.tagline', lang)}</span>
-    </div>
-    <h1 class="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-gray-900 dark:text-gray-100 tracking-tight mb-6">
-      {t('home.hero.title', lang)}
-    </h1>
-    <p class="text-xl md:text-2xl font-serif italic text-warm-700 dark:text-warm-400 mb-6">
-      {t('home.hero.subtitle', lang)}
-    </p>
-    <p class="text-base sm:text-lg text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl mx-auto">
-      {t('home.hero.description', lang)}
-    </p>
-  </div>
-
+<div>
   <!-- Dual Cards Grid: Horizon vs Journal -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 lg:gap-10">
     <!-- Horizon Card -->
     <div class="group relative flex flex-col justify-between p-8 sm:p-10 rounded-2xl bg-gradient-to-b from-white to-gray-50/50 dark:from-zinc-900 dark:to-zinc-950 border border-gray-200 dark:border-zinc-800 hover:border-warm-400 dark:hover:border-warm-500 shadow-sm hover:shadow-xl transition-all duration-300">
       <div>

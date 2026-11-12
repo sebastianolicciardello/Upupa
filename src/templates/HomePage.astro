@@ -1,14 +1,46 @@
----
+--- 
 import Layout from '../layouts/Layout.astro';
-import DualHero from '../components/DualHero.astro';
 ---
+
+<style>
+  /* On desktop, apply the diagonal clip-path and z-index to the top section */
+  @media (min-width: 768px) {
+    #horizon-section {
+      clip-path: polygon(0 0, 55% 0, 45% 100%, 0% 100%);
+      z-index: 10;
+    }
+    #journal-section {
+      z-index: 5;
+    }
+  }
+</style>
 
 <Layout title="Upupa · Horizon & Journal" isHome={true} lang="it" singleLanguage>
-  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 flex flex-col justify-center min-h-[calc(100vh-16rem)]">
+  <div class="h-[calc(100vh-8rem-1px)] flex flex-col md:relative">
 
-    <!-- Italian Version -->
-    <div data-lang="it">
-      <DualHero lang="it" />
-    </div>
+    <!-- Journal Section (Bottom Layer on Desktop) -->
+    <a 
+      id="journal-section"
+      href="/journal"
+      class="group relative flex-1 md:absolute md:inset-0 flex items-center justify-center text-black overflow-hidden bg-gray-100"
+    >
+      <div class="absolute inset-0 bg-white bg-opacity-30 group-hover:bg-opacity-10 transition-all duration-500"></div>
+      <div class="relative w-full h-full flex items-center justify-center md:justify-end md:pr-[25vw]">
+        <h1 class="text-5xl font-bold transform group-hover:scale-110 transition-transform duration-500">Journal</h1>
+      </div>
+    </a>
+
+    <!-- Horizon Section (Top Layer on Desktop) -->
+    <a 
+      id="horizon-section"
+      href="/horizon"
+      class="group relative flex-1 md:absolute md:inset-0 flex items-center justify-center text-white overflow-hidden bg-gray-800"
+    >
+      <div class="absolute inset-0 bg-black bg-opacity-50 group-hover:bg-opacity-30 transition-all duration-500"></div>
+      <div class="relative w-full h-full flex items-center justify-center md:justify-start md:pl-[25vw]">
+        <h1 class="text-5xl font-bold transform group-hover:scale-110 transition-transform duration-500">Horizon</h1>
+      </div>
+    </a>
+
   </div>
 </Layout>
