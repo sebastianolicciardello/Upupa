@@ -1,9 +1,23 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { t } from '../utils/i18n';
+
+const lang = 'it' as const;
+
+// Paragraphs of the hero description and of the participation card are kept as
+// single dictionary entries separated by blank lines, so the copy lives in one
+// place (i18n.ts) while the template decides how to lay it out.
+const heroParagraphs = t('horizon.hero.description', lang).split('\n\n').filter(Boolean);
+const safetyParagraphs = t('horizon.participate.safety', lang).split('\n\n').filter(Boolean);
+
+const pillars = [
+  { emoji: '🧭', title: 'horizon.pillar1.title', desc: 'horizon.pillar1.desc' },
+  { emoji: '🌿', title: 'horizon.pillar2.title', desc: 'horizon.pillar2.desc' },
+  { emoji: '🫂', title: 'horizon.pillar3.title', desc: 'horizon.pillar3.desc' },
+];
 ---
 
-<Layout title="Horizon · Upupa" lang="it" singleLanguage>
+<Layout title={t('horizon.page.title', lang)} description={t('horizon.page.description', lang)} lang={lang} singleLanguage>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Back to Hub / Breadcrumb -->
     <div class="mb-8">
@@ -15,73 +29,75 @@ import { t } from '../utils/i18n';
       </a>
     </div>
 
-    <!-- Italian Content -->
-    <div data-lang="it">
+    <div data-lang={lang}>
       <!-- Horizon Hero -->
       <div class="text-center mb-16">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900 text-xs font-semibold tracking-wider uppercase mb-6">
-          <span>{t('home.horizon.badge', 'it')}</span>
+          <span>{t('horizon.badge', lang)}</span>
         </div>
         <h1 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-6">
-          {t('horizon.hero.title', 'it')}
+          {t('horizon.hero.title', lang)}
         </h1>
         <p class="text-xl font-serif italic text-blue-600 dark:text-blue-400 mb-6 max-w-xl mx-auto">
-          {t('horizon.hero.subtitle', 'it')}
+          {t('horizon.hero.subtitle', lang)}
         </p>
-        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-          {t('horizon.hero.description', 'it')}
-        </p>
+        <div class="max-w-2xl mx-auto space-y-4">
+          {heroParagraphs.map((paragraph) => (
+            <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+              {paragraph}
+            </p>
+          ))}
+        </div>
       </div>
 
       <!-- Horizon Pillars -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-        <div class="p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
-          <div class="text-3xl mb-4">🧭</div>
-          <h2 class="text-xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-3">
-            {t('horizon.pillar1.title', 'it')}
-          </h2>
-          <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-            {t('horizon.pillar1.desc', 'it')}
-          </p>
-        </div>
-
-        <div class="p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
-          <div class="text-3xl mb-4">⚡️</div>
-          <h2 class="text-xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-3">
-            {t('horizon.pillar2.title', 'it')}
-          </h2>
-          <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-            {t('horizon.pillar2.desc', 'it')}
-          </p>
-        </div>
-
-        <div class="p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
-          <div class="text-3xl mb-4">🌱</div>
-          <h2 class="text-xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-3">
-            {t('horizon.pillar3.title', 'it')}
-          </h2>
-          <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-            {t('horizon.pillar3.desc', 'it')}
-          </p>
-        </div>
+        {pillars.map((pillar) => (
+          <div class="p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
+            <div class="text-3xl mb-4" aria-hidden="true">{pillar.emoji}</div>
+            <h2 class="text-xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-3">
+              {t(pillar.title, lang)}
+            </h2>
+            <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+              {t(pillar.desc, lang)}
+            </p>
+          </div>
+        ))}
       </div>
 
-      <!-- Horizon Manifesto / Vision Card -->
+      <!-- Participation / Manifesto Card -->
       <div class="p-8 md:p-12 rounded-3xl bg-gradient-to-br from-blue-50/70 via-warm-50/40 to-white dark:from-zinc-900 dark:via-zinc-900/90 dark:to-zinc-950 border border-blue-100 dark:border-zinc-800 mb-16">
-        <h3 class="text-2xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-4">
-          Lo Sguardo in Avanti
-        </h3>
-        <p class="text-gray-700 dark:text-gray-300 leading-relaxed text-base mb-6">
-          Ogni cammino ha bisogno di due ancore: la memoria della terra percorsa e la curiosità per l'orizzonte non ancora raggiunto. Horizon è lo spazio in cui le aspirazioni diventano esperimenti, i progetti prendono corpo e le prossime tappe vengono sognate prima di essere vissute.
+        <h2 class="text-2xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-4">
+          {t('horizon.participate.title', lang)}
+        </h2>
+        <p class="text-gray-700 dark:text-gray-300 leading-relaxed text-base mb-4">
+          {t('horizon.participate.intro', lang)}
         </p>
+        <div class="space-y-4 mb-6">
+          {safetyParagraphs.map((paragraph) => (
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed text-base">
+              {paragraph}
+            </p>
+          ))}
+        </div>
+
         <div class="flex flex-wrap items-center gap-4 pt-4 border-t border-gray-200/60 dark:border-zinc-800">
-          <a href="/journal/" class="inline-flex items-center text-sm font-semibold text-warm-700 dark:text-warm-400 hover:text-warm-800 dark:hover:text-warm-300">
-            <span>{t('horizon.cta.journal', 'it')}</span>
-            <span class="ml-1">→</span>
+          <a
+            href="https://t.me/thenomadupupa"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-400 transition-colors"
+          >
+            <span>{t('horizon.cta.telegram', lang)}</span>
+            <span class="ml-1.5" aria-hidden="true">→</span>
           </a>
-          <span class="text-gray-300 dark:text-zinc-700">•</span>
+          <a href="/journal/" class="inline-flex items-center text-sm font-semibold text-warm-700 dark:text-warm-400 hover:text-warm-800 dark:hover:text-warm-300">
+            <span>{t('horizon.cta.journal', lang)}</span>
+            <span class="ml-1" aria-hidden="true">→</span>
+          </a>
+          <span class="text-gray-300 dark:text-zinc-700" aria-hidden="true">•</span>
           <a href="/about/" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200">
-            <span>{t('discover.about', 'it')}</span>
+            <span>{t('horizon.cta.about', lang)}</span>
           </a>
         </div>
       </div>

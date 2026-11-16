@@ -4,6 +4,8 @@ import '../styles/global.css';
 
 export interface Props {
 	title?: string;
+	/** Optional meta description for search engines and link previews. */
+	description?: string;
 	lang?: Language;
 	isHome?: boolean;
 	/**
@@ -14,7 +16,7 @@ export interface Props {
 	singleLanguage?: boolean;
 }
 
-const { title, lang, isHome = false, singleLanguage = false } = Astro.props;
+const { title, description, lang, isHome = false, singleLanguage = false } = Astro.props;
 // Bilingual pages are rendered in English on the server and switch dynamically on the
 // client (saved preference first, then the device language). Single-language pages are
 // always rendered in `lang` (Italian by default).
@@ -36,6 +38,7 @@ const navLangs: Language[] = singleLanguage ? [currentLang] : ['en', 'it'];
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
 		<title>{pageTitle}</title>
+		{description && <meta name="description" content={description} />}
 		<style>
 			/* Pre-hide wrong language content to prevent flash */
 			html[data-initial-lang="it"] [data-lang="en"] { display: none !important; }
