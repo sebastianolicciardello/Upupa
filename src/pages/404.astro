@@ -1,0 +1,59 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { t } from '../utils/i18n';
+
+const lang = 'it' as const;
+
+// GitHub Pages serves this page for every unknown path and has no server-side
+// redirects, so retired routes are forwarded on the client. The table is
+// deliberately built from the browser's location: this page is prerendered once
+// at build time, so anything derived from Astro.url would be the build path.
+const RETIRED: Record<string, string> = {
+  '/journal/blog': '/journal/archive/',
+};
+
+// SEO: keep whatever lands here out of the index.
+Astro.response.headers.set('X-Robots-Tag', 'noindex');
+Astro.response.status = 404;
+---
+
+<Layout title="Pagina non trovata · Upupa" lang="it" singleLanguage navContext="journal">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <script is:inline define:vars={{ RETIRED }}>
+      // Forward retired paths (e.g. /journal/blog/) to their new location.
+      const path = window.location.pathname.replace(/\/+$/, '') || '/';
+      const target = RETIRED[path];
+      if (target && !window.location.search.includes('no-redirect')) {
+        window.location.replace(target + window.location.hash);
+      }
+    </script>
+    <div class="max-w-xl mx-auto text-center">
+      {/* Shown only when JavaScript is off: the redirect above cannot run. */}
+      <noscript>
+        <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">
+          L'archivio si trova qui: <a href="/journal/archive/" class="underline">/journal/archive/</a>.
+        </p>
+      </noscript>
+      <p class="text-sm font-semibold tracking-wider uppercase text-gray-400 dark:text-gray-500 mb-4">
+        404
+      </p>
+      <h1 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-4">
+        Pagina non trovata
+      </h1>
+      <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-10">
+        Questa pagina non esiste, oppure si è spostata. Puoi tornare al Journal o all'archivio completo.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="/journal/archive/" class="inline-flex items-center px-5 py-2.5 rounded-lg bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-sm font-medium hover:bg-gray-700 dark:hover:bg-white transition-colors">
+          Vai all'Archivio
+        </a>
+        <a href="/journal/" class="inline-flex items-center px-5 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+          Torna al Journal
+        </a>
+        <a href="/" class="inline-flex items-center px-5 py-2.5 text-gray-500 dark:text-gray-400 text-sm hover:text-warm-600 dark:hover:text-warm-400 transition-colors">
+          {t('nav.hub', lang)}
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

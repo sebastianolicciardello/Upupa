@@ -134,14 +134,14 @@ if (post.isMultilingual) {
 }
 ---
 
-<Layout title={processedDataEn?.title || processedDataIt?.title}>
+<Layout title={processedDataEn?.title || processedDataIt?.title} navContext="journal">
   <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- English Version -->
     {processedDataEn && (
       <div data-lang="en">
         <header class="mb-8">
           <div class="mb-4">
-            <a href="/journal/blog/" class="inline-flex items-center text-sm text-warm-600 dark:text-warm-400 hover:text-warm-700 dark:hover:text-warm-300 transition-colors">
+            <a href="/journal/archive/" class="inline-flex items-center text-sm text-warm-600 dark:text-warm-400 hover:text-warm-700 dark:hover:text-warm-300 transition-colors">
               ← Back to archive
             </a>
           </div>
@@ -203,7 +203,7 @@ if (post.isMultilingual) {
       <div data-lang="it" style="display: none;">
         <header class="mb-8">
           <div class="mb-4">
-            <a href="/journal/blog/" class="inline-flex items-center text-sm text-warm-600 dark:text-warm-400 hover:text-warm-700 dark:hover:text-warm-300 transition-colors">
+            <a href="/journal/archive/" class="inline-flex items-center text-sm text-warm-600 dark:text-warm-400 hover:text-warm-700 dark:hover:text-warm-300 transition-colors">
               ← Torna all'archivio
             </a>
           </div>

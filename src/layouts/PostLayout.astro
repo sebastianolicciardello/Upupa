@@ -12,13 +12,13 @@ const backText = currentLang === 'it' ? 'Torna all\'archivio' : 'Back to archive
 const eventText = currentLang === 'it' ? 'Evento:' : 'Event:';
 const publishedText = currentLang === 'it' ? 'Pubblicato:' : 'Published:';
 const musicText = currentLang === 'it' ? 'Canzone che Mi Ha Ispirato' : 'Song That Inspired Me';
-const backUrl = '/journal/blog/'; // Same URL for both languages
+const backUrl = '/journal/archive/'; // Same URL for both languages
 const locale = currentLang === 'it' ? 'it-IT' : 'en-US';
 
 const eventDateRange = formatDateRange(eventStartTime, eventEndTime, locale);
 ---
 
-<Layout title={title} lang={currentLang}>
+<Layout title={title} lang={currentLang} navContext="journal">
   <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <header class="mb-8">
       <div class="mb-4">
