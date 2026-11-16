@@ -1,33 +1,34 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ConnectLinks from '../components/ConnectLinks.astro';
-import { t } from '../utils/i18n';
-
-const lang = 'it' as const;
 ---
 
-<Layout title="Il progetto · Upupa" navContext="hub" lang="it" singleLanguage>
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="max-w-3xl mx-auto">
-      <!-- Header -->
-      <div class="text-center mb-12">
-        <h1 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-4">
-          Il progetto
-        </h1>
-        <p class="text-lg text-gray-500 dark:text-gray-400 italic font-serif">
-          Un mondo, due espressioni.
+<Layout title="Chi sono · Upupa" navContext="hub" lang="it" singleLanguage>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="max-w-2xl mx-auto text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-warm-100 dark:bg-warm-950/60 text-warm-800 dark:text-warm-300 border-warm-200 dark:border-warm-800 text-xs font-semibold tracking-wider uppercase mb-6">
+        <span>Upupa</span>
+      </div>
+
+      <h1 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-6">
+        Chi sono
+      </h1>
+
+      <div class="p-8 sm:p-12 rounded-2xl bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800 shadow-sm mt-8">
+        <div class="w-12 h-12 mx-auto mb-4 text-warm-600 dark:text-warm-400">
+          <svg class="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+        </div>
+        <p class="text-lg font-serif italic text-gray-700 dark:text-gray-300 mb-3">
+          Pagina in compilazione
+        </p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+          Questa sezione è attualmente in fase di preparazione. Presto troverai qui maggiori informazioni.
         </p>
       </div>
 
-      <!-- Intro -->
-      <div class="space-y-4 mb-12">
-        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-          Upupa è lo spazio digitale in cui convivono due dimensioni complementari dello stesso mondo.
-          Una raccoglie esperienze da vivere insieme, l'altra le storie che restano dopo.
-        </p>
-      </div>
 
-      <!-- The two dimensions -->
+      <div class="hidden">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
         <div class="p-6 sm:p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800">
           <span class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider uppercase rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900">
@@ -64,7 +65,7 @@ const lang = 'it' as const;
         </div>
       </div>
 
-      <!-- Note on privacy of places -->
+
       <div class="p-8 rounded-2xl bg-warm-50/80 dark:bg-zinc-900/80 border border-warm-200/80 dark:border-zinc-800 mb-12">
         <p class="text-gray-700 dark:text-gray-300 leading-relaxed text-sm">
           Le due dimensioni condividono una sensibilità verso la libertà, la scoperta e la natura, ma hanno
@@ -72,13 +73,7 @@ const lang = 'it' as const;
         </p>
       </div>
 
-      <!-- Social Links -->
-      <ConnectLinks
-        connectTitle={t('connect.title', lang)}
-        telegramLabel={t('connect.telegram', lang)}
-        channelLabel={t('connect.channel', lang)}
-        instagramLabel={t('connect.instagram', lang)}
-      />
+
     </div>
   </div>
 </Layout>
