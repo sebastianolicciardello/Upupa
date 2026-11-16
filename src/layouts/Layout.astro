@@ -15,17 +15,24 @@ export interface Props {
 	 */
 	singleLanguage?: boolean;
 	/**
-	 * Navigation context for the section links (Horizon, Journal, Archivio, Chi Sono).
-	 * "journal" restricts the links to Journal · Archivio · Chi Sono, plus the way
-	 * back to the upupa.life index; "horizon" keeps Horizon in the menu.
+	 * Navigation context for the section links (Horizon, Journal, Hub).
+	 * "journal" restricts the links to Journal · Archivio · Chi Sono, with brand Upupa Journal -> /journal/
+	 * "horizon" restricts the links to Cosa facciamo · Partecipa · Il Progetto, with brand Upupa Horizon -> /horizon/
+	 * "hub" is the default root/about context with brand Upupa -> /
 	 */
-	navContext?: 'horizon' | 'journal';
+	navContext?: 'hub' | 'horizon' | 'journal';
 }
 
-const { title, description, lang, isHome = false, singleLanguage = false, navContext = 'horizon' } = Astro.props;
+const { title, description, lang, isHome = false, singleLanguage = false, navContext = (isHome ? 'hub' : 'hub') } = Astro.props;
 const isJournalNav = navContext === 'journal';
-const showHorizonLink = !isJournalNav;
-const showHubLink = isJournalNav;
+const isHorizonNav = navContext === 'horizon';
+const isHubNav = !isJournalNav && !isHorizonNav;
+
+const brandText = isJournalNav ? 'Upupa Journal' : isHorizonNav ? 'Upupa Horizon' : 'Upupa';
+const brandHref = isJournalNav ? '/journal/' : isHorizonNav ? '/horizon/' : '/';
+const brandHoverClass = isHorizonNav
+	? 'hover:text-blue-600 dark:hover:text-blue-400'
+	: 'hover:text-warm-600 dark:hover:text-warm-400';
 // Bilingual pages are rendered in English on the server and switch dynamically on the
 // client (saved preference first, then the device language). Single-language pages are
 // always rendered in `lang` (Italian by default).
@@ -92,13 +99,13 @@ const navLangs: Language[] = singleLanguage ? [currentLang] : ['en', 'it'];
 		<nav class="bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
 			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="flex justify-between items-center h-16">
-					<a href="/" class="flex items-center space-x-2 text-xl font-serif font-bold text-gray-900 dark:text-gray-100 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">
-						<span>Upupa</span>
+					<a href={brandHref} class={`flex items-center space-x-2 text-xl font-serif font-bold text-gray-900 dark:text-gray-100 ${brandHoverClass} transition-colors`}>
+						<span>{brandText}</span>
 					</a>
 					
 					<!-- Desktop Navigation -->
 					<div class="hidden md:flex items-center space-x-6">
-						{isHome ? (
+						{isHubNav ? (
 							<>
 								{navLangs.map((l, i) => (
 									<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>
@@ -106,19 +113,22 @@ const navLangs: Language[] = singleLanguage ? [currentLang] : ['en', 'it'];
 									</span>
 								))}
 							</>
+						) : isJournalNav ? (
+							<>
+								{navLangs.map((l, i) => (
+									<span data-lang={l} style={i === 0 ? undefined : 'display: none;'} class="flex items-center space-x-6">
+										<a href="/journal/archive/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.archive', l)}</a>
+										<a href="/journal/contact/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.contact', l)}</a>
+										<a href="/" class="text-gray-500 dark:text-gray-400 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.hub', l)}</a>
+									</span>
+								))}
+							</>
 						) : (
 							<>
 								{navLangs.map((l, i) => (
 									<span data-lang={l} style={i === 0 ? undefined : 'display: none;'} class="flex items-center space-x-6">
-										{showHorizonLink && (
-											<a href="/horizon/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.horizon', l)}</a>
-										)}
-										<a href="/journal/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.journal', l)}</a>
-										<a href="/journal/archive/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.archive', l)}</a>
-										<a href="/about/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.about', l)}</a>
-										{showHubLink && (
-											<a href="/" class="text-gray-500 dark:text-gray-400 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.hub', l)}</a>
-										)}
+										<a href="/horizon/contact/" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">{t('nav.contact', l)}</a>
+										<a href="/" class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.hub', l)}</a>
 									</span>
 								))}
 							</>
@@ -157,7 +167,7 @@ const navLangs: Language[] = singleLanguage ? [currentLang] : ['en', 'it'];
 				<!-- Mobile Menu -->
 				<div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-zinc-900">
 					<div class="px-2 pt-2 pb-3 space-y-1">
-						{isHome ? (
+						{isHubNav ? (
 							<>
 								{navLangs.map((l, i) => (
 									<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>
@@ -165,19 +175,22 @@ const navLangs: Language[] = singleLanguage ? [currentLang] : ['en', 'it'];
 									</span>
 								))}
 							</>
+						) : isJournalNav ? (
+							<>
+								{navLangs.map((l, i) => (
+									<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>
+										<a href="/journal/archive/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.archive', l)}</a>
+										<a href="/journal/contact/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.contact', l)}</a>
+										<a href="/" class="block px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.hub', l)}</a>
+									</span>
+								))}
+							</>
 						) : (
 							<>
 								{navLangs.map((l, i) => (
 									<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>
-										{showHorizonLink && (
-											<a href="/horizon/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.horizon', l)}</a>
-										)}
-										<a href="/journal/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.journal', l)}</a>
-										<a href="/journal/archive/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.archive', l)}</a>
-										<a href="/about/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.about', l)}</a>
-										{showHubLink && (
-											<a href="/" class="block px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.hub', l)}</a>
-										)}
+										<a href="/horizon/contact/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.contact', l)}</a>
+										<a href="/" class="block px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.hub', l)}</a>
 									</span>
 								))}
 							</>
