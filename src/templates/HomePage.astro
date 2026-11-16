@@ -4,9 +4,7 @@ import SplitScreen from '../components/SplitScreen.astro';
 import SplitPane from '../components/SplitPane.astro';
 import { t } from '../utils/i18n';
 
-// Bilingual home: the two panes are rendered once per language and the layout
-// shows only the active one (the wrapper carries `data-lang`).
-const homeLangs = ['en', 'it'] as const;
+const lang = 'it' as const;
 
 // Background image candidates for each pane (Cloudinary originals, resized on delivery).
 const candidates = {
@@ -61,21 +59,19 @@ const panes = [
 ];
 ---
 
-<Layout title="Upupa · Horizon & Journal" isHome={true} lang="it" singleLanguage>
+<Layout title="Upupa · Horizon & Journal" isHome={true} lang="it" singleLanguage navContext="hub">
   <SplitScreen>
-    {homeLangs.map((lang, i) =>
-      panes.map((pane) => (
-        <div class="split-pane-wrap" data-lang={lang} style={i === 0 ? undefined : 'display: none;'}>
-          <SplitPane
-            href={pane.href}
-            image={pane.image}
-            title={t(pane.title, lang)}
-            eyebrow={t(pane.subtitle, lang)}
-            description={t(pane.description, lang)}
-            cta={t(pane.cta, lang)}
-          />
-        </div>
-      ))
-    )}
+    {panes.map((pane) => (
+      <div class="split-pane-wrap">
+        <SplitPane
+          href={pane.href}
+          image={pane.image}
+          title={t(pane.title, lang)}
+          eyebrow={t(pane.subtitle, lang)}
+          description={t(pane.description, lang)}
+          cta={t(pane.cta, lang)}
+        />
+      </div>
+    ))}
   </SplitScreen>
 </Layout>

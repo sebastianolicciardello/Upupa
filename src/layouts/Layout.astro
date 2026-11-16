@@ -10,8 +10,9 @@ export interface Props {
 	isHome?: boolean;
 	/**
 	 * If true the page is rendered in a single language (the one passed via `lang`)
-	 * and the language toggle is hidden. If false (default) the page is bilingual
-	 * and the toggle is shown.
+	 * and the language toggle is hidden. If false the page is bilingual
+	 * and the toggle is shown. Defaults to false only for 'journal' navContext,
+	 * true (Italian only) for all other contexts.
 	 */
 	singleLanguage?: boolean;
 	/**
@@ -23,7 +24,14 @@ export interface Props {
 	navContext?: 'hub' | 'horizon' | 'journal';
 }
 
-const { title, description, lang, isHome = false, singleLanguage = false, navContext = (isHome ? 'hub' : 'hub') } = Astro.props;
+const {
+	title,
+	description,
+	lang,
+	isHome = false,
+	navContext = (isHome ? 'hub' : 'hub'),
+	singleLanguage = (navContext !== 'journal'),
+} = Astro.props;
 const isJournalNav = navContext === 'journal';
 const isHorizonNav = navContext === 'horizon';
 const isHubNav = !isJournalNav && !isHorizonNav;
@@ -33,9 +41,7 @@ const brandHref = isJournalNav ? '/journal/' : isHorizonNav ? '/horizon/' : '/';
 const brandHoverClass = isHorizonNav
 	? 'hover:text-blue-600 dark:hover:text-blue-400'
 	: 'hover:text-warm-600 dark:hover:text-warm-400';
-// Bilingual pages are rendered in English on the server and switch dynamically on the
-// client (saved preference first, then the device language). Single-language pages are
-// always rendered in `lang` (Italian by default).
+// Only Journal can be bilingual; everything else is rendered in Italian only.
 const currentLang: Language = singleLanguage ? (lang ?? 'it') : 'en';
 const pageTitle = title || t('page.title', currentLang);
 // Languages rendered in the navigation: both for bilingual pages, one for single-language pages.
@@ -56,12 +62,9 @@ const navLangs: Language[] = singleLanguage ? [currentLang] : ['en', 'it'];
 		<title>{pageTitle}</title>
 		{description && <meta name="description" content={description} />}
 		<style>
-			/* Pre-hide wrong language content to prevent flash */
+			/* Pre-hide wrong language content to prevent flash on bilingual pages */
 			html[data-initial-lang="it"] [data-lang="en"] { display: none !important; }
 			html[data-initial-lang="en"] [data-lang="it"] { display: none !important; }
-			/* Show correct language content immediately */
-			html[data-initial-lang="it"] [data-lang="it"] { display: block !important; }
-			html[data-initial-lang="en"] [data-lang="en"] { display: block !important; }
 		</style>
 		<script is:inline define:vars={{ isSingleLanguage: singleLanguage, initialLang: currentLang }}>
 			// Runs before paint: resolve language and theme to avoid any flash.
@@ -107,30 +110,49 @@ const navLangs: Language[] = singleLanguage ? [currentLang] : ['en', 'it'];
 					<div class="hidden md:flex items-center space-x-6">
 						{isHubNav ? (
 							<>
-								{navLangs.map((l, i) => (
-									<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>
-										<a href="/about/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.about', l)}</a>
-									</span>
-								))}
+								{singleLanguage ? (
+									<a href="/about/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.about', currentLang)}</a>
+								) : (
+									navLangs.map((l, i) => (
+										<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>
+											<a href="/about/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.about', l)}</a>
+										</span>
+									))
+								)}
 							</>
 						) : isJournalNav ? (
 							<>
-								{navLangs.map((l, i) => (
-									<span data-lang={l} style={i === 0 ? undefined : 'display: none;'} class="flex items-center space-x-6">
-										<a href="/journal/archive/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.archive', l)}</a>
-										<a href="/journal/contact/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.contact', l)}</a>
-										<a href="/" class="text-gray-500 dark:text-gray-400 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.hub', l)}</a>
-									</span>
-								))}
+								{singleLanguage ? (
+									<div class="flex items-center space-x-6">
+										<a href="/journal/archive/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.archive', currentLang)}</a>
+										<a href="/journal/contact/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.contact', currentLang)}</a>
+										<a href="/" class="text-gray-500 dark:text-gray-400 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.hub', currentLang)}</a>
+									</div>
+								) : (
+									navLangs.map((l, i) => (
+										<span data-lang={l} style={i === 0 ? undefined : 'display: none;'} class="flex items-center space-x-6">
+											<a href="/journal/archive/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors font-medium">{t('nav.archive', l)}</a>
+											<a href="/journal/contact/" class="text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.contact', l)}</a>
+											<a href="/" class="text-gray-500 dark:text-gray-400 hover:text-warm-600 dark:hover:text-warm-400 transition-colors">{t('nav.hub', l)}</a>
+										</span>
+									))
+								)}
 							</>
 						) : (
 							<>
-								{navLangs.map((l, i) => (
-									<span data-lang={l} style={i === 0 ? undefined : 'display: none;'} class="flex items-center space-x-6">
-										<a href="/horizon/contact/" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">{t('nav.contact', l)}</a>
-										<a href="/" class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.hub', l)}</a>
-									</span>
-								))}
+								{singleLanguage ? (
+									<div class="flex items-center space-x-6">
+										<a href="/horizon/contact/" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">{t('nav.contact', currentLang)}</a>
+										<a href="/" class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.hub', currentLang)}</a>
+									</div>
+								) : (
+									navLangs.map((l, i) => (
+										<span data-lang={l} style={i === 0 ? undefined : 'display: none;'} class="flex items-center space-x-6">
+											<a href="/horizon/contact/" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">{t('nav.contact', l)}</a>
+											<a href="/" class="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{t('nav.hub', l)}</a>
+										</span>
+									))
+								)}
 							</>
 						)}
 						{!singleLanguage && (
@@ -169,30 +191,49 @@ const navLangs: Language[] = singleLanguage ? [currentLang] : ['en', 'it'];
 					<div class="px-2 pt-2 pb-3 space-y-1">
 						{isHubNav ? (
 							<>
-								{navLangs.map((l, i) => (
-									<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>
-										<a href="/about/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.about', l)}</a>
-									</span>
-								))}
+								{singleLanguage ? (
+									<a href="/about/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.about', currentLang)}</a>
+								) : (
+									navLangs.map((l, i) => (
+										<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>
+											<a href="/about/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.about', l)}</a>
+										</span>
+									))
+								)}
 							</>
 						) : isJournalNav ? (
 							<>
-								{navLangs.map((l, i) => (
-									<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>
-										<a href="/journal/archive/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.archive', l)}</a>
-										<a href="/journal/contact/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.contact', l)}</a>
-										<a href="/" class="block px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.hub', l)}</a>
-									</span>
-								))}
+								{singleLanguage ? (
+									<>
+										<a href="/journal/archive/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.archive', currentLang)}</a>
+										<a href="/journal/contact/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.contact', currentLang)}</a>
+										<a href="/" class="block px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.hub', currentLang)}</a>
+									</>
+								) : (
+									navLangs.map((l, i) => (
+										<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>
+											<a href="/journal/archive/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.archive', l)}</a>
+											<a href="/journal/contact/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.contact', l)}</a>
+											<a href="/" class="block px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-warm-600 dark:hover:text-warm-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.hub', l)}</a>
+										</span>
+									))
+								)}
 							</>
 						) : (
 							<>
-								{navLangs.map((l, i) => (
-									<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>
-										<a href="/horizon/contact/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.contact', l)}</a>
-										<a href="/" class="block px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.hub', l)}</a>
-									</span>
-								))}
+								{singleLanguage ? (
+									<>
+										<a href="/horizon/contact/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.contact', currentLang)}</a>
+										<a href="/" class="block px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.hub', currentLang)}</a>
+									</>
+								) : (
+									navLangs.map((l, i) => (
+										<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>
+											<a href="/horizon/contact/" class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors font-medium">{t('nav.contact', l)}</a>
+											<a href="/" class="block px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">{t('nav.hub', l)}</a>
+										</span>
+									))
+								)}
 							</>
 						)}
 						
@@ -217,9 +258,13 @@ const navLangs: Language[] = singleLanguage ? [currentLang] : ['en', 'it'];
 							)}
 							<div class="flex items-center justify-between">
 								<span class="text-sm text-gray-600 dark:text-gray-400">
-									{navLangs.map((l, i) => (
-										<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>{t('settings.theme', l)}</span>
-									))}
+									{singleLanguage ? (
+										<span>{t('settings.theme', currentLang)}</span>
+									) : (
+										navLangs.map((l, i) => (
+											<span data-lang={l} style={i === 0 ? undefined : 'display: none;'}>{t('settings.theme', l)}</span>
+										))
+									)}
 								</span>
 								<button id="theme-toggle-mobile" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" aria-label="Toggle theme">
 									<svg id="theme-toggle-light-icon-mobile" class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
@@ -245,9 +290,13 @@ const navLangs: Language[] = singleLanguage ? [currentLang] : ['en', 'it'];
 			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 				<div class="flex flex-col items-center justify-center text-center">
 					<div class="text-xs text-gray-400 dark:text-gray-500 w-full text-center">
-						{navLangs.map((l, i) => (
-							<p data-lang={l} style={i === 0 ? undefined : 'display: none;'}>&copy; {t('footer.copyright', l)}</p>
-						))}
+						{singleLanguage ? (
+							<p>&copy; {t('footer.copyright', currentLang)}</p>
+						) : (
+							navLangs.map((l, i) => (
+								<p data-lang={l} style={i === 0 ? undefined : 'display: none;'}>&copy; {t('footer.copyright', l)}</p>
+							))
+						)}
 					</div>
 				</div>
 			</div>
@@ -303,6 +352,7 @@ const navLangs: Language[] = singleLanguage ? [currentLang] : ['en', 'it'];
 	}
 	
 	function setLanguage(lang) {
+		if (SINGLE_LANGUAGE) return;
 		localStorage.setItem('language-preference', lang);
 		updateLanguageContent(lang);
 	}
@@ -320,18 +370,20 @@ const navLangs: Language[] = singleLanguage ? [currentLang] : ['en', 'it'];
 		document.documentElement.style.visibility = 'visible';
 		document.documentElement.removeAttribute('data-lang-loading');
 		
-		// Language toggle functionality - moved inside DOMContentLoaded
-		const langToggle = document.getElementById('lang-toggle');
-		const langToggleMobile = document.getElementById('lang-toggle-mobile');
-		
-		function handleLanguageToggle() {
-			const currentLang = resolvePageLanguage();
-			const newLang = currentLang === 'en' ? 'it' : 'en';
-			setLanguage(newLang);
+		// Language toggle functionality - only on bilingual pages
+		if (!SINGLE_LANGUAGE) {
+			const langToggle = document.getElementById('lang-toggle');
+			const langToggleMobile = document.getElementById('lang-toggle-mobile');
+			
+			function handleLanguageToggle() {
+				const currentLang = resolvePageLanguage();
+				const newLang = currentLang === 'en' ? 'it' : 'en';
+				setLanguage(newLang);
+			}
+			
+			langToggle?.addEventListener('click', handleLanguageToggle);
+			langToggleMobile?.addEventListener('click', handleLanguageToggle);
 		}
-		
-		langToggle?.addEventListener('click', handleLanguageToggle);
-		langToggleMobile?.addEventListener('click', handleLanguageToggle);
 	});
 
 	// Theme toggle functionality
