@@ -1,0 +1,91 @@
+---
+/**
+ * SplitPane
+ * One clean card of a `<SplitScreen>`: background image, a light gradient for
+ * legibility and a simple text block with title, eyebrow and call to action.
+ */
+import { Image } from 'astro:assets';
+
+interface Props {
+  href: string;
+  /** Background image: a local asset or a remote URL. Omit for a soft gradient. */
+  image?: ImageMetadata | string;
+  title: string;
+  /** Small uppercase line above the title. */
+  eyebrow?: string;
+  description?: string;
+  cta?: string;
+  class?: string;
+}
+
+const { href, image, title, eyebrow, description, cta, class: className = '' } = Astro.props;
+
+const isAsset = Boolean(image) && typeof image !== 'string';
+
+// Media height on mobile, flexible on desktop where the pane fills the split.
+const mediaClass = 'relative h-[58vw] max-h-[420px] min-h-[240px] md:h-auto md:max-h-none md:min-h-[420px] md:flex-1';
+---
+<a
+  href={href}
+  class:list={[
+    'group relative flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-warm-400 hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-warm-500',
+    className,
+  ]}
+>
+  <!-- Background image -->
+  <div class:list={['relative overflow-hidden', mediaClass]}>
+    {isAsset ? (
+      <Image
+        src={image as ImageMetadata}
+        alt=""
+        class="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
+        widths={[640, 960, 1440]}
+        sizes="(min-width: 768px) 50vw, 100vw"
+        loading="eager"
+        inferSize
+      />
+    ) : image ? (
+      <img
+        src={image as string}
+        alt=""
+        class="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
+        loading="eager"
+        decoding="async"
+      />
+    ) : (
+      <div class="absolute inset-0 bg-gradient-to-br from-zinc-700 via-zinc-800 to-zinc-900" aria-hidden="true"></div>
+    )}
+
+    <!-- Light bottom gradient so the text below stays readable against the image edge -->
+    <div
+      class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 to-transparent"
+      aria-hidden="true"
+    ></div>
+
+    <!-- Text block over the image -->
+    <div class="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+      {eyebrow && (
+        <span class="mb-2 inline-block text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white/80">
+          {eyebrow}
+        </span>
+      )}
+      <h2 class="font-serif text-3xl font-bold text-white sm:text-4xl">{title}</h2>
+    </div>
+  </div>
+
+  <!-- Card body -->
+  <div class="flex flex-1 flex-col justify-between p-6 sm:p-8">
+    {description && (
+      <p class="text-sm leading-relaxed text-gray-600 sm:text-base dark:text-gray-400">{description}</p>
+    )}
+
+    {cta && (
+      <span class="mt-6 inline-flex items-center text-sm font-medium text-warm-800 dark:text-warm-400">
+        <span>{cta}</span>
+        <svg class="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </span>
+    )}
+  </div>
+</a>

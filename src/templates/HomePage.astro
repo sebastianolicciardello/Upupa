@@ -1,46 +1,81 @@
---- 
-import Layout from '../layouts/Layout.astro';
 ---
+import Layout from '../layouts/Layout.astro';
+import SplitScreen from '../components/SplitScreen.astro';
+import SplitPane from '../components/SplitPane.astro';
+import { t } from '../utils/i18n';
 
-<style>
-  /* On desktop, apply the diagonal clip-path and z-index to the top section */
-  @media (min-width: 768px) {
-    #horizon-section {
-      clip-path: polygon(0 0, 55% 0, 45% 100%, 0% 100%);
-      z-index: 10;
-    }
-    #journal-section {
-      z-index: 5;
+// Bilingual home: the two panes are rendered once per language and the layout
+// shows only the active one (the wrapper carries `data-lang`).
+const homeLangs = ['en', 'it'] as const;
+
+// Background image candidates for each pane (Cloudinary originals, resized on delivery).
+const candidates = {
+  horizon: [
+    'https://res.cloudinary.com/digfarmqt/image/upload/f_auto,q_auto,c_limit,w_1600/v1793121386/thenomadupupa/changing-pace/04-etna3.jpg',
+    'https://res.cloudinary.com/digfarmqt/image/upload/f_auto,q_auto,c_limit,w_1600/v1783408818/PXL_20250830_193525313.NIGHT_ucs5jq.jpg',
+    'https://res.cloudinary.com/digfarmqt/image/upload/f_auto,q_auto,c_limit,w_1600/v1783408823/PXL_20250824_131511805_eibasw.jpg',
+  ],
+  journal: [
+    'https://res.cloudinary.com/digfarmqt/image/upload/f_auto,q_auto,c_limit,w_1600/v1793121401/thenomadupupa/changing-pace/05-etna4-il-luogo-difficile.jpg',
+    'https://res.cloudinary.com/digfarmqt/image/upload/f_auto,q_auto,c_limit,w_1600/v1783408822/PXL_20250831_043414609.MP_d6szpr.jpg',
+    'https://res.cloudinary.com/digfarmqt/image/upload/f_auto,q_auto,c_limit,w_1600/v1783408817/PXL_20250727_070001417_yyfywc.jpg',
+  ],
+};
+
+// Pick the first reachable image at build time; undefined means the pane falls
+// back to a soft gradient so the home page never ends up with a broken image.
+async function firstReachable(urls: string[]) {
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, { method: 'HEAD' });
+      if (res.ok) return url;
+    } catch {
+      // ignore and try the next candidate
     }
   }
-</style>
+  return undefined;
+}
+
+const [horizonImage, journalImage] = await Promise.all([
+  firstReachable(candidates.horizon),
+  firstReachable(candidates.journal),
+]);
+
+const panes = [
+  {
+    href: '/horizon/',
+    image: horizonImage,
+    title: 'home.horizon.title',
+    subtitle: 'home.horizon.subtitle',
+    description: 'home.horizon.description',
+    cta: 'home.horizon.cta',
+  },
+  {
+    href: '/journal/',
+    image: journalImage,
+    title: 'home.journal.title',
+    subtitle: 'home.journal.subtitle',
+    description: 'home.journal.description',
+    cta: 'home.journal.cta',
+  },
+];
+---
 
 <Layout title="Upupa · Horizon & Journal" isHome={true} lang="it" singleLanguage>
-  <div class="h-[calc(100vh-8rem-1px)] flex flex-col md:relative">
-
-    <!-- Journal Section (Bottom Layer on Desktop) -->
-    <a 
-      id="journal-section"
-      href="/journal"
-      class="group relative flex-1 md:absolute md:inset-0 flex items-center justify-center text-black overflow-hidden bg-gray-100"
-    >
-      <div class="absolute inset-0 bg-white bg-opacity-30 group-hover:bg-opacity-10 transition-all duration-500"></div>
-      <div class="relative w-full h-full flex items-center justify-center md:justify-end md:pr-[25vw]">
-        <h1 class="text-5xl font-bold transform group-hover:scale-110 transition-transform duration-500">Journal</h1>
-      </div>
-    </a>
-
-    <!-- Horizon Section (Top Layer on Desktop) -->
-    <a 
-      id="horizon-section"
-      href="/horizon"
-      class="group relative flex-1 md:absolute md:inset-0 flex items-center justify-center text-white overflow-hidden bg-gray-800"
-    >
-      <div class="absolute inset-0 bg-black bg-opacity-50 group-hover:bg-opacity-30 transition-all duration-500"></div>
-      <div class="relative w-full h-full flex items-center justify-center md:justify-start md:pl-[25vw]">
-        <h1 class="text-5xl font-bold transform group-hover:scale-110 transition-transform duration-500">Horizon</h1>
-      </div>
-    </a>
-
-  </div>
+  <SplitScreen>
+    {homeLangs.map((lang, i) =>
+      panes.map((pane) => (
+        <div class="split-pane-wrap" data-lang={lang} style={i === 0 ? undefined : 'display: none;'}>
+          <SplitPane
+            href={pane.href}
+            image={pane.image}
+            title={t(pane.title, lang)}
+            eyebrow={t(pane.subtitle, lang)}
+            description={t(pane.description, lang)}
+            cta={t(pane.cta, lang)}
+          />
+        </div>
+      ))
+    )}
+  </SplitScreen>
 </Layout>

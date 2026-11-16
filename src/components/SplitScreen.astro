@@ -1,0 +1,41 @@
+---
+/**
+ * SplitScreen
+ * Two clean cards side by side on desktop, stacked on mobile. Each
+ * `<SplitPane>` fills one half. The split is vertically centred under the nav
+ * and capped so both halves match height. On bilingual pages the panes are
+ * rendered once per language and only the active language is shown, so the
+ * flex children are the language wrappers.
+ */
+interface Props {
+  /** Height of the split area. Defaults to the viewport minus nav and footer. */
+  heightClass?: string;
+  class?: string;
+}
+
+const {
+  heightClass = 'min-h-[calc(100vh-8rem-1px)]',
+  class: className = '',
+} = Astro.props;
+---
+
+<div class:list={['flex w-full items-center justify-center px-4 py-8 sm:px-6 lg:px-8', heightClass, className]}>
+  <div class="flex w-full max-w-6xl flex-col gap-6 md:flex-row md:items-stretch md:gap-8">
+    <slot />
+  </div>
+</div>
+
+<style>
+  /* Each language wrapper takes half of the split; the hidden one is removed from layout. */
+  :global(.split-pane-wrap) {
+    display: flex;
+    flex: 1 1 0%;
+    min-height: 0;
+    min-width: 0;
+  }
+
+  /* The card fills the wrapper so both halves end up the same height. */
+  :global(.split-pane-wrap > a) {
+    flex: 1 1 auto;
+  }
+</style>
