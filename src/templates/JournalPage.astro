@@ -2,7 +2,6 @@
 import Layout from '../layouts/Layout.astro';
 import HeroSection from '../components/HeroSection.astro';
 import PostsGrid from '../components/PostsGrid.astro';
-import DiscoverSection from '../components/DiscoverSection.astro';
 import ReadingGuide from '../components/ReadingGuide.astro';
 import { getCollection } from 'astro:content';
 import { t, type Language } from '../utils/i18n';
@@ -81,14 +80,6 @@ const recentPostsIt = processedPostsIt
         viewAllUrl="/journal/archive/"
         viewAllText={t('posts.viewAll', 'en')}
       />
-
-      <!-- Discover More Section -->
-      <DiscoverSection 
-        title={t('discover.title', 'en')}
-        description={t('discover.description', 'en')}
-        aboutUrl="/about/"
-        aboutText={t('discover.about', 'en')}
-      />
     </div>
 
     <!-- Journal Section - Italian -->
@@ -109,14 +100,6 @@ const recentPostsIt = processedPostsIt
         showViewAll={true}
         viewAllUrl="/journal/archive/"
         viewAllText={t('posts.viewAll', 'it')}
-      />
-
-      <!-- Discover More Section -->
-      <DiscoverSection 
-        title={t('discover.title', 'it')}
-        description={t('discover.description', 'it')}
-        aboutUrl="/about/"
-        aboutText={t('discover.about', 'it')}
       />
     </div>
   </div>

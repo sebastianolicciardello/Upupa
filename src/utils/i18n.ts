@@ -148,6 +148,12 @@ Here, I share stories, places, and thoughts after time has allowed them to take 
     'nomadArchive.description': 'All posts about moments lived before 23 February 2026: the beginning of the journey.',
     'nomadArchive.empty': 'No posts from this period',
     'nomadArchive.back': 'Back to the Archive',
+    'blog.era.nomad.pending': 'Section under construction',
+    'blog.era.nomad.pendingDetail': 'The description of this period is currently being written. Soon you will find here the story of the journey from which everything started.',
+
+    // Common
+    'common.underConstruction.title': 'Section under construction',
+    'common.underConstruction.description': 'This section is currently being prepared. Soon you will find more information here.',
 
     // Post & Guide
     'posts.recent': 'Recent Reflections',
@@ -259,6 +265,12 @@ Questo diario nasce per raccogliere le esperienze quando si sono sedimentate, qu
     'nomadArchive.description': 'Tutti i post sui momenti vissuti prima del 23 febbraio 2026, in ordine cronologico: l\'inizio del viaggio.',
     'nomadArchive.empty': 'Nessun post di questo periodo',
     'nomadArchive.back': 'Torna all\'Archivio',
+    'blog.era.nomad.pending': 'Sezione in compilazione',
+    'blog.era.nomad.pendingDetail': 'La descrizione di questo periodo è in fase di scrittura. Presto troverai qui il racconto del viaggio da cui è partito tutto.',
+
+    // Common
+    'common.underConstruction.title': 'Sezione in compilazione',
+    'common.underConstruction.description': 'Questa sezione è attualmente in fase di preparazione. Presto troverai qui maggiori informazioni.',
 
     // Post & Guide
     'posts.recent': 'Riflessioni Recenti',
