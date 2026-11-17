@@ -241,9 +241,9 @@ Here, I share stories, places, and thoughts after time has allowed them to take 
 
 Chiedono di essere vissuti: davvero, fino in fondo, senza fretta.
 
-Questo diario nasce per raccogliere le esperienze quando si sono sedimentate, quando diventano storie, comprensioni, emozioni che restano.
+Questo diario nasce per raccogliere esperienze, osservazioni e pensieri quando si sono sedimentati, quando diventano storie, comprensioni ed emozioni che restano.
 
-È un luogo per riflessioni lente, nate dal viaggio, ma condivise solo quando hanno trovato la loro forma.`,
+È uno spazio per raccontare la vita, esplorare il mondo e custodire ciò che merita di essere ricordato. Senza fretta, senza un tempo prestabilito.`,
     
     // Blog / Archive
     'blog.title': 'Archivio di Journal',

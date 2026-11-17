@@ -115,9 +115,6 @@ const erasIt = splitByEra(sortedPostsIt);
         description={t('blog.description', 'en')}
       />
 
-      <!-- Reading Guide -->
-      <ReadingGuide lang="en" />
-
       <!-- Recent posts: hidden entirely while nothing has been lived after the era -->
       {erasEn.recent.length > 0 && (
         <>
@@ -148,6 +145,7 @@ const erasIt = splitByEra(sortedPostsIt);
         <h2 class="text-xl sm:text-2xl font-serif font-semibold text-gray-900 dark:text-gray-100 mb-2">
           {t('blog.era.nomad.title', 'en')}
         </h2>
+        <ReadingGuide lang="en" />
         <div class="mb-6 max-w-2xl">
           <UnderConstructionNotice
             lang="en"
@@ -175,9 +173,6 @@ const erasIt = splitByEra(sortedPostsIt);
         title={t('blog.title', 'it')}
         description={t('blog.description', 'it')}
       />
-
-      <!-- Reading Guide -->
-      <ReadingGuide lang="it" />
 
       <!-- Recent posts: hidden entirely while nothing has been lived after the era -->
       {erasIt.recent.length > 0 && (
@@ -209,6 +204,7 @@ const erasIt = splitByEra(sortedPostsIt);
         <h2 class="text-xl sm:text-2xl font-serif font-semibold text-gray-900 dark:text-gray-100 mb-2">
           {t('blog.era.nomad.title', 'it')}
         </h2>
+        <ReadingGuide lang="it" />
         <div class="mb-6 max-w-2xl">
           <UnderConstructionNotice
             lang="it"

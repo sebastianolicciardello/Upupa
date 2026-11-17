@@ -2,7 +2,6 @@
 import Layout from '../layouts/Layout.astro';
 import HeroSection from '../components/HeroSection.astro';
 import PostsGrid from '../components/PostsGrid.astro';
-import ReadingGuide from '../components/ReadingGuide.astro';
 import { getCollection } from 'astro:content';
 import { t, type Language } from '../utils/i18n';
 
@@ -68,9 +67,6 @@ const recentPostsIt = processedPostsIt
         description={t('hero.description', 'en')}
       />
 
-      <!-- Reading Guide -->
-      <ReadingGuide lang="en" />
-
       <!-- Recent Posts -->
       <PostsGrid 
         posts={recentPostsEn}
@@ -88,9 +84,6 @@ const recentPostsIt = processedPostsIt
         title={t('hero.title', 'it')}
         description={t('hero.description', 'it')}
       />
-
-      <!-- Reading Guide -->
-      <ReadingGuide lang="it" />
 
       <!-- Recent Posts -->
       <PostsGrid 
