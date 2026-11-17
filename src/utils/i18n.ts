@@ -202,15 +202,15 @@ Here, I share stories, places, and thoughts after time has allowed them to take 
     // Horizon Section Card on Home
     'home.horizon.badge': 'Esperienze condivise',
     'home.horizon.title': 'Horizon',
-    'home.horizon.subtitle': 'Natura, incontri, esplorazioni',
-    'home.horizon.description': 'Uscite nella natura, esplorazioni e giornate insieme. Horizon crea occasioni per vivere esperienze nuove, conoscere persone e scoprire il territorio.',
+    'home.horizon.subtitle': 'Un invito a scoprire e vivere il territorio, insieme.',
+    'home.horizon.description': 'Un progetto fatto di esplorazioni, natura e occasioni per conoscere luoghi e persone.',
     'home.horizon.cta': 'Scopri Horizon',
     
     // Journal Section Card on Home
     'home.journal.badge': 'Racconti e riflessioni',
     'home.journal.title': 'Journal',
-    'home.journal.subtitle': 'Esperienze vissute e raccontate',
-    'home.journal.description': 'Storie, pensieri e scoperte personali pubblicate quando hanno trovato il loro momento. Esperienze vissute, raccontate con il tempo che serve.',
+    'home.journal.subtitle': 'Uno sguardo personale sul mondo, tra luoghi, natura e pensieri.',
+    'home.journal.description': 'Non tutto viene raccontato mentre accade. Alcune esperienze hanno bisogno di essere vissute, lasciate sedimentare e ritrovate nel tempo.',
     'home.journal.cta': 'Entra nel Journal',
     'home.journal.recentTitle': 'Ultime riflessioni dal Journal',
 
