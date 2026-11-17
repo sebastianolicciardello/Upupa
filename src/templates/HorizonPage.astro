@@ -8,8 +8,14 @@ const lang = 'it' as const;
 <Layout title={t('horizon.page.title', lang)} description={t('horizon.page.description', lang)} lang={lang} singleLanguage navContext="horizon">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
     <div class="max-w-2xl mx-auto text-center">
-      <h1 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-6">
-        {t('horizon.hero.title', lang)}
+      <h1 class="mb-8">
+        <img
+          src="/horizon-logo.png"
+          alt="Upupa Horizon"
+          width="768"
+          height="768"
+          class="mx-auto w-56 sm:w-64 h-auto dark:brightness-0 dark:invert"
+        />
       </h1>
 
       <div class="p-8 sm:p-12 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm mt-8">
