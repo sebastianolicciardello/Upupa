@@ -117,19 +117,6 @@ const erasIt = splitByEra(sortedPostsIt);
       <!-- Reading Guide -->
       <ReadingGuide lang="en" />
 
-      <!-- Jump to the historical era -->
-      <div class="mb-6 flex justify-end">
-        <a
-          href="/journal/nomad-upupa/"
-          class="inline-flex items-center gap-2 text-sm font-medium text-warm-600 dark:text-warm-400 hover:text-warm-700 dark:hover:text-warm-300 transition-colors"
-        >
-          {t('blog.era.nomad.cta', 'en')}
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-          </svg>
-        </a>
-      </div>
-
       <!-- Recent posts: hidden entirely while nothing has been lived after the era -->
       {erasEn.recent.length > 0 && (
         <>
@@ -187,19 +174,6 @@ const erasIt = splitByEra(sortedPostsIt);
 
       <!-- Reading Guide -->
       <ReadingGuide lang="it" />
-
-      <!-- Jump to the historical era -->
-      <div class="mb-6 flex justify-end">
-        <a
-          href="/journal/nomad-upupa/"
-          class="inline-flex items-center gap-2 text-sm font-medium text-warm-600 dark:text-warm-400 hover:text-warm-700 dark:hover:text-warm-300 transition-colors"
-        >
-          {t('blog.era.nomad.cta', 'it')}
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-          </svg>
-        </a>
-      </div>
 
       <!-- Recent posts: hidden entirely while nothing has been lived after the era -->
       {erasIt.recent.length > 0 && (
