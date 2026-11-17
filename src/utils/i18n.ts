@@ -247,8 +247,8 @@ Questo diario nasce per raccogliere esperienze, osservazioni e pensieri quando s
     
     // Blog / Archive
     'blog.title': 'Archivio di Journal',
-    'blog.subtitle': 'Tutti i pensieri, viaggi e momenti raccolti nel tempo.',
-    'blog.description': 'Tutti i pensieri, viaggi e momenti raccolti nel tempo.',
+    'blog.subtitle': 'Tutti i pensieri, le esperienze e le scoperte raccolti nel tempo.',
+    'blog.description': 'Tutti i pensieri, le esperienze e le scoperte raccolti nel tempo.',
     'blog.empty': 'Nessuna riflessione trovata',
     'blog.readMore': 'Leggi di più',
     'blog.sort.newest': 'Ordinamento: Più Recenti',
