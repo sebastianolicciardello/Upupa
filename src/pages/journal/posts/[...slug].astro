@@ -5,13 +5,14 @@ import MusicPlayer from '../../../components/MusicPlayer.astro';
 import type { Language } from '../../../utils/i18n';
 import { Marked } from 'marked';
 import { formatDateRange } from '../../../utils/dateUtils';
+import { optimizeCloudinaryImage } from '../../../utils/cloudinary';
 
 const customMarked = new Marked();
 customMarked.use({
   renderer: {
     image(token) {
       const caption = token.title || token.text;
-      const imgHtml = `<img src="${token.href}" alt="${token.text || ''}" ${token.title ? `title="${token.title}"` : ''} class="max-w-full h-auto object-contain rounded-lg shadow-md" style="max-height: 800px; margin: 0 auto; display: block; margin-bottom: 0 !important;" loading="lazy" />`;
+      const imgHtml = `<img src="${optimizeCloudinaryImage(token.href, 1600)}" alt="${token.text || ''}" ${token.title ? `title="${token.title}"` : ''} class="max-w-full h-auto object-contain rounded-lg shadow-md" style="max-height: 800px; margin: 0 auto; display: block; margin-bottom: 0 !important;" loading="lazy" />`;
       
       if (caption) {
         return `<figure style="display: flex; flex-direction: column; align-items: center; width: 100%; margin: 2rem auto;">
@@ -171,7 +172,7 @@ if (post.isMultilingual) {
           {processedDataEn.cover && (
             <figure class="mt-6 flex flex-col items-center">
               <img
-                src={processedDataEn.cover}
+                src={optimizeCloudinaryImage(processedDataEn.cover, 1600)}
                 alt={processedDataEn.coverCaption || `Cover image for ${processedDataEn.title}`}
                 class="max-w-full h-auto object-contain rounded-lg shadow-md"
                 style="max-height: 600px;"
@@ -233,7 +234,7 @@ if (post.isMultilingual) {
           {processedDataIt.cover && (
             <figure class="mt-6 flex flex-col items-center">
               <img
-                src={processedDataIt.cover}
+                src={optimizeCloudinaryImage(processedDataIt.cover, 1600)}
                 alt={processedDataIt.coverCaption || `Immagine di copertina per ${processedDataIt.title}`}
                 class="max-w-full h-auto object-contain rounded-lg shadow-md"
                 style="max-height: 600px;"
