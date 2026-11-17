@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import PostsList from '../components/PostsList.astro';
+import SortButton from '../components/SortButton.astro';
 import ReadingGuide from '../components/ReadingGuide.astro';
 import { getCollection } from 'astro:content';
 import { t, type Language } from '../utils/i18n';
@@ -75,13 +76,33 @@ const processedPostsIt = allPosts.flatMap(post => {
   return [];
 });
 
+// Both eras are listed newest first: the sort button then flips them on demand.
 const sortedPostsEn = processedPostsEn.sort((a, b) =>
-  b.data.publishTime.getTime() - a.data.publishTime.getTime()
+  b.data.eventStartTime.getTime() - a.data.eventStartTime.getTime()
 );
 
 const sortedPostsIt = processedPostsIt.sort((a, b) =>
-  b.data.publishTime.getTime() - a.data.publishTime.getTime()
+  b.data.eventStartTime.getTime() - a.data.eventStartTime.getTime()
 );
+
+// The archive is split in two eras by the *event* date (when the moment happened),
+// not by the publication date: the historical "Nomad Upupa" period holds the
+// moments lived before 23 February 2026, the recent section the ones after it.
+const NOMAD_ERA_END = new Date('2026-02-23T00:00:00Z').getTime();
+
+function splitByEra(posts: any[]) {
+  return {
+    recent: posts
+      .filter(post => post.data.eventStartTime.getTime() >= NOMAD_ERA_END)
+      .sort((a, b) => b.data.eventStartTime.getTime() - a.data.eventStartTime.getTime()),
+    nomad: posts
+      .filter(post => post.data.eventStartTime.getTime() < NOMAD_ERA_END)
+      .sort((a, b) => b.data.eventStartTime.getTime() - a.data.eventStartTime.getTime()),
+  };
+}
+
+const erasEn = splitByEra(sortedPostsEn);
+const erasIt = splitByEra(sortedPostsIt);
 ---
 
 <Layout title="Archivio · Upupa" navContext="journal">
@@ -96,33 +117,65 @@ const sortedPostsIt = processedPostsIt.sort((a, b) =>
       <!-- Reading Guide -->
       <ReadingGuide lang="en" />
 
-      <!-- Sort Button -->
+      <!-- Jump to the historical era -->
       <div class="mb-6 flex justify-end">
-        <button
-          id="sortButton-en"
-          class="inline-flex items-center gap-3 px-4 py-2 bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 shadow-sm"
-          data-order="newest"
-          title={t('blog.sort.switchTo.oldest', 'en')}
+        <a
+          href="/journal/nomad-upupa/"
+          class="inline-flex items-center gap-2 text-sm font-medium text-warm-600 dark:text-warm-400 hover:text-warm-700 dark:hover:text-warm-300 transition-colors"
         >
-          <span class="text-sm font-medium" data-current-state>{t('blog.sort.newest', 'en')}</span>
-          <div class="flex items-center gap-1 text-gray-400 dark:text-gray-500">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12M8 12h12M8 17h12M3 7h.01M3 12h.01M3 17h.01"></path>
-            </svg>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-icon>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </div>
-        </button>
+          {t('blog.era.nomad.cta', 'en')}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
+        </a>
       </div>
 
-      <div id="postsList-en">
-        <PostsList
-          posts={sortedPostsEn}
-          lang="en"
-          emptyMessage={t('blog.empty', 'en')}
-        />
-      </div>
+      <!-- Recent posts: hidden entirely while nothing has been lived after the era -->
+      {erasEn.recent.length > 0 && (
+        <>
+          <SortButton id="sortButton-en" target="postsList-en" lang="en" />
+
+          <section class="mb-16">
+            <h2 class="text-xl sm:text-2xl font-serif font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              {t('blog.era.recent.title', 'en')}
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+              {t('blog.era.recent.description', 'en')}
+            </p>
+
+            <div id="postsList-en">
+              <PostsList
+                posts={erasEn.recent}
+                lang="en"
+                dataLang="en"
+                emptyMessage={t('blog.empty', 'en')}
+              />
+            </div>
+          </section>
+        </>
+      )}
+
+      <!-- Historical era: The Nomad Upupa -->
+      <section id="nomad-upupa" class="scroll-mt-24 border-t border-gray-200 dark:border-gray-700 pt-10">
+        <h2 class="text-xl sm:text-2xl font-serif font-semibold text-gray-900 dark:text-gray-100 mb-2">
+          {t('blog.era.nomad.title', 'en')}
+        </h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-2xl leading-relaxed">
+          {t('blog.era.nomad.description', 'en')}
+        </p>
+
+        <!-- Sort Button (Nomad Upupa era) -->
+        <SortButton id="sortButton-nomad-en" target="postsList-nomad-en" lang="en" />
+
+        <div id="postsList-nomad-en">
+          <PostsList
+            posts={erasEn.nomad}
+            lang="en"
+            dataLang="en"
+            emptyMessage={t('nomadArchive.empty', 'en')}
+          />
+        </div>
+      </section>
     </div>
 
     <!-- Italian Version -->
@@ -135,96 +188,65 @@ const sortedPostsIt = processedPostsIt.sort((a, b) =>
       <!-- Reading Guide -->
       <ReadingGuide lang="it" />
 
-      <!-- Sort Button -->
+      <!-- Jump to the historical era -->
       <div class="mb-6 flex justify-end">
-        <button
-          id="sortButton-it"
-          class="inline-flex items-center gap-3 px-4 py-2 bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 shadow-sm"
-          data-order="newest"
-          title={t('blog.sort.switchTo.oldest', 'it')}
+        <a
+          href="/journal/nomad-upupa/"
+          class="inline-flex items-center gap-2 text-sm font-medium text-warm-600 dark:text-warm-400 hover:text-warm-700 dark:hover:text-warm-300 transition-colors"
         >
-          <span class="text-sm font-medium" data-current-state>{t('blog.sort.newest', 'it')}</span>
-          <div class="flex items-center gap-1 text-gray-400 dark:text-gray-500">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12M8 12h12M8 17h12M3 7h.01M3 12h.01M3 17h.01"></path>
-            </svg>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-icon>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </div>
-        </button>
+          {t('blog.era.nomad.cta', 'it')}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
+        </a>
       </div>
 
-      <div id="postsList-it">
-        <PostsList
-          posts={sortedPostsIt}
-          lang="it"
-          emptyMessage={t('blog.empty', 'it')}
-        />
-      </div>
+      <!-- Recent posts: hidden entirely while nothing has been lived after the era -->
+      {erasIt.recent.length > 0 && (
+        <>
+          <SortButton id="sortButton-it" target="postsList-it" lang="it" />
+
+          <section class="mb-16">
+            <h2 class="text-xl sm:text-2xl font-serif font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              {t('blog.era.recent.title', 'it')}
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+              {t('blog.era.recent.description', 'it')}
+            </p>
+
+            <div id="postsList-it">
+              <PostsList
+                posts={erasIt.recent}
+                lang="it"
+                dataLang="it"
+                emptyMessage={t('blog.empty', 'it')}
+              />
+            </div>
+          </section>
+        </>
+      )}
+
+      <!-- Historical era: The Nomad Upupa -->
+      <section id="nomad-upupa" class="scroll-mt-24 border-t border-gray-200 dark:border-gray-700 pt-10">
+        <h2 class="text-xl sm:text-2xl font-serif font-semibold text-gray-900 dark:text-gray-100 mb-2">
+          {t('blog.era.nomad.title', 'it')}
+        </h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-2xl leading-relaxed">
+          {t('blog.era.nomad.description', 'it')}
+        </p>
+
+        <!-- Sort Button (Nomad Upupa era) -->
+        <SortButton id="sortButton-nomad-it" target="postsList-nomad-it" lang="it" />
+
+        <div id="postsList-nomad-it">
+          <PostsList
+            posts={erasIt.nomad}
+            lang="it"
+            dataLang="it"
+            emptyMessage={t('nomadArchive.empty', 'it')}
+          />
+        </div>
+      </section>
     </div>
   </div>
 </Layout>
-
-<script>
-  import { t } from '../utils/i18n';
-
-  function setupSortButton(lang: 'en' | 'it') {
-    const button = document.getElementById(`sortButton-${lang}`);
-    const postsList = document.getElementById(`postsList-${lang}`);
-
-    if (!button || !postsList) return;
-
-    button.addEventListener('click', () => {
-      const currentOrder = button.getAttribute('data-order');
-      const newOrder = currentOrder === 'newest' ? 'oldest' : 'newest';
-
-      // Get all post cards
-      const postsContainer = postsList.querySelector('[class*="space-y-"]');
-      if (!postsContainer) return;
-
-      const posts = Array.from(postsContainer.children);
-
-      // Reverse the order
-      posts.reverse();
-
-      // Clear and re-append in new order
-      postsContainer.innerHTML = '';
-      posts.forEach(post => postsContainer.appendChild(post));
-
-      // Update button state
-      button.setAttribute('data-order', newOrder);
-
-      // Update current state text
-      const stateSpan = button.querySelector('[data-current-state]');
-      if (stateSpan) {
-        stateSpan.textContent = newOrder === 'newest'
-          ? t('blog.sort.newest', lang)
-          : t('blog.sort.oldest', lang);
-      }
-
-      // Update title (tooltip)
-      button.setAttribute('title', newOrder === 'newest'
-        ? t('blog.sort.switchTo.oldest', lang)
-        : t('blog.sort.switchTo.newest', lang)
-      );
-
-      // Update icon direction
-      const icon = button.querySelector('[data-icon]');
-      if (icon) {
-        const path = icon.querySelector('path');
-        if (path) {
-          // Down arrow for newest (descending), up arrow for oldest (ascending)
-          path.setAttribute('d', newOrder === 'newest'
-            ? 'M19 9l-7 7-7-7'  // Down arrow
-            : 'M5 15l7-7 7 7'   // Up arrow
-          );
-        }
-      }
-    });
-  }
-
-  // Setup for both languages
-  setupSortButton('en');
-  setupSortButton('it');
-</script>

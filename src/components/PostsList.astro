@@ -5,23 +5,26 @@ export interface Props {
   posts: any[];
   lang?: 'en' | 'it';
   emptyMessage?: string;
+  /** Language marker on the wrapper, so the language toggle can hide/show this list. */
+  dataLang?: 'en' | 'it';
 }
 
 const { 
   posts, 
   lang = 'en',
-  emptyMessage = 'No reflections written yet. Come back soon for new content.'
+  emptyMessage = 'No reflections written yet. Come back soon for new content.',
+  dataLang
 } = Astro.props;
 ---
 
 {posts.length > 0 ? (
-  <div class="space-y-3 sm:space-y-4 md:space-y-6">
+  <div class="space-y-3 sm:space-y-4 md:space-y-6" data-lang={dataLang}>
     {posts.map((post) => (
       <PostCard post={post} lang={lang} />
     ))}
   </div>
 ) : (
-  <div class="text-center py-12">
+  <div class="text-center py-12" data-lang={dataLang}>
     <p class="text-gray-500 dark:text-gray-400 text-lg">
       {emptyMessage}
     </p>

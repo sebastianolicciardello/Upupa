@@ -138,6 +138,16 @@ Here, I share stories, places, and thoughts after time has allowed them to take 
     'blog.sort.oldest': 'Sorted: Oldest First',
     'blog.sort.switchTo.newest': 'Switch to Newest First',
     'blog.sort.switchTo.oldest': 'Switch to Oldest First',
+    'blog.era.recent.title': 'Recent Posts',
+    'blog.era.recent.description': 'Reflections on moments lived from 23 February 2026 onwards.',
+    'blog.era.nomad.title': 'The Nomad Upupa Period',
+    'blog.era.nomad.description': 'The posts about moments lived before 23 February 2026: the journey from which everything started, when the hoopoe became a guide and the journal took its first steps.',
+    'blog.era.nomad.cta': 'Go to the Nomad Upupa posts',
+    'blog.era.current.cta': 'Back to recent posts',
+    'nomadArchive.title': 'The Nomad Upupa Period',
+    'nomadArchive.description': 'All posts about moments lived before 23 February 2026: the beginning of the journey.',
+    'nomadArchive.empty': 'No posts from this period',
+    'nomadArchive.back': 'Back to the Archive',
 
     // Post & Guide
     'posts.recent': 'Recent Reflections',
@@ -239,6 +249,16 @@ Questo diario nasce per raccogliere le esperienze quando si sono sedimentate, qu
     'blog.sort.oldest': 'Ordinamento: Più Vecchi',
     'blog.sort.switchTo.newest': 'Passa a Più Recenti',
     'blog.sort.switchTo.oldest': 'Passa a Più Vecchi',
+    'blog.era.recent.title': 'Post Recenti',
+    'blog.era.recent.description': 'Le riflessioni sui momenti vissuti dal 23 febbraio 2026 in poi.',
+    'blog.era.nomad.title': 'Il Periodo Nomad Upupa',
+    'blog.era.nomad.description': 'I post sui momenti vissuti prima del 23 febbraio 2026: il viaggio da cui è partito tutto, quando l\'upupa è diventata una guida e il diario ha mosso i primi passi.',
+    'blog.era.nomad.cta': 'Vai ai post del periodo Nomad Upupa',
+    'blog.era.current.cta': 'Torna ai post recenti',
+    'nomadArchive.title': 'Il Periodo Nomad Upupa',
+    'nomadArchive.description': 'Tutti i post sui momenti vissuti prima del 23 febbraio 2026, in ordine cronologico: l\'inizio del viaggio.',
+    'nomadArchive.empty': 'Nessun post di questo periodo',
+    'nomadArchive.back': 'Torna all\'Archivio',
 
     // Post & Guide
     'posts.recent': 'Riflessioni Recenti',

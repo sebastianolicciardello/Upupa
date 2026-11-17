@@ -1,0 +1,106 @@
+---
+import { t, type Language } from '../utils/i18n';
+
+export interface Props {
+  /** Unique id, the script binds to it. */
+  id: string;
+  /** Id of the posts list this button reorders. */
+  target: string;
+  lang?: Language;
+  /** Ordered list: ascending (oldest first) shows 1..n. */
+  initialOrder?: 'newest' | 'oldest';
+}
+
+const { id, target, lang = 'en', initialOrder = 'newest' } = Astro.props;
+---
+
+<div class="mb-6 flex justify-end">
+  <button
+    id={id}
+    class="inline-flex items-center gap-3 px-4 py-2 bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 shadow-sm"
+    data-order={initialOrder}
+    data-target={target}
+    title={initialOrder === 'newest'
+      ? t('blog.sort.switchTo.oldest', lang)
+      : t('blog.sort.switchTo.newest', lang)}
+  >
+    <span class="text-sm font-medium" data-current-state>
+      {initialOrder === 'newest' ? t('blog.sort.newest', lang) : t('blog.sort.oldest', lang)}
+    </span>
+    <div class="flex items-center gap-1 text-gray-400 dark:text-gray-500">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12M8 12h12M8 17h12M3 7h.01M3 12h.01M3 17h.01"></path>
+      </svg>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-icon>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={initialOrder === 'newest' ? 'M19 9l-7 7-7-7' : 'M5 15l7-7 7 7'}></path>
+      </svg>
+    </div>
+  </button>
+</div>
+
+<script>
+  import { t } from '../utils/i18n';
+
+  function setupSortButton(button: HTMLElement) {
+    if (button.hasAttribute('data-initialized')) return;
+    button.setAttribute('data-initialized', 'true');
+
+    const targetId = button.getAttribute('data-target');
+    const postsList = targetId ? document.getElementById(targetId) : null;
+    // The language of this button comes from its own page section.
+    const lang = (button.closest('[data-lang]')?.getAttribute('data-lang') ?? 'en') as 'en' | 'it';
+
+    if (!postsList) return;
+
+    button.addEventListener('click', () => {
+      const currentOrder = button.getAttribute('data-order');
+      const newOrder = currentOrder === 'newest' ? 'oldest' : 'newest';
+
+      // Get all post cards
+      const postsContainer = postsList.querySelector('[class*="space-y-"]');
+      if (!postsContainer) return;
+
+      const posts = Array.from(postsContainer.children);
+
+      // Reverse the order
+      posts.reverse();
+
+      // Clear and re-append in new order
+      postsContainer.innerHTML = '';
+      posts.forEach(post => postsContainer.appendChild(post));
+
+      // Update button state
+      button.setAttribute('data-order', newOrder);
+
+      // Update current state text
+      const stateSpan = button.querySelector('[data-current-state]');
+      if (stateSpan) {
+        stateSpan.textContent = newOrder === 'newest'
+          ? t('blog.sort.newest', lang)
+          : t('blog.sort.oldest', lang);
+      }
+
+      // Update title (tooltip)
+      button.setAttribute('title', newOrder === 'newest'
+        ? t('blog.sort.switchTo.oldest', lang)
+        : t('blog.sort.switchTo.newest', lang)
+      );
+
+      // Update icon direction
+      const icon = button.querySelector('[data-icon]');
+      if (icon) {
+        const path = icon.querySelector('path');
+        if (path) {
+          // Down arrow for newest (descending), up arrow for oldest (ascending)
+          path.setAttribute('d', newOrder === 'newest'
+            ? 'M19 9l-7 7-7-7'  // Down arrow
+            : 'M5 15l7-7 7 7'   // Up arrow
+          );
+        }
+      }
+    });
+  }
+
+  // Every sort button on the page manages its own list.
+  document.querySelectorAll<HTMLElement>('button[data-target]').forEach(setupSortButton);
+</script>
